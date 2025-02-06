@@ -5,11 +5,13 @@ import {
     Transaction,
     ComputeBudgetProgram,
     Connection,
-    clusterApiUrl
+    clusterApiUrl,
+    SystemProgram,
 } from "@solana/web3.js";
 import {
     createAssociatedTokenAccountIdempotentInstruction,
     getAssociatedTokenAddressSync,
+    TOKEN_PROGRAM_ID
 } from "@solana/spl-token";
 import IDL from "./idl.json";
 import { wallet, PROGRAMID } from "../constant";
@@ -32,12 +34,14 @@ function createTransaction() {
     return transaction;
 }
 
-export const deposite_token = async (wallet, connection, amount, MINT_ADDRESS) => {
-
-    // const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-    const provider = createProvider(wallet, connection)
-
-    const program = new Program(IDL, PROGRAMID, provider);
+export const deposite_token = async (
+    wallet,
+    connection,
+    provider,
+    program,
+    amount,
+    MINT_ADDRESS
+) => {
     console.log(program)
     const USER_ADDRESS = wallet.publicKey
 
@@ -53,14 +57,16 @@ export const deposite_token = async (wallet, connection, amount, MINT_ADDRESS) =
         MINT_ADDRESS,
         USER_ADDRESS,
         true,
+        TOKEN_PROGRAM_ID,
     );
 
     const usererAtaInstruction =
         createAssociatedTokenAccountIdempotentInstruction(
-            USER_ADDRESS,
+            wallet.publicKey,
             userAta,
             USER_ADDRESS,
             MINT_ADDRESS,
+            TOKEN_PROGRAM_ID
         );
 
     transaction.add(usererAtaInstruction);
@@ -69,6 +75,7 @@ export const deposite_token = async (wallet, connection, amount, MINT_ADDRESS) =
         MINT_ADDRESS,
         TOKEN_VAULT_ADDRESS,
         true,
+        TOKEN_PROGRAM_ID
     );
 
     const tokenVaultAtaInstruction =
@@ -77,23 +84,23 @@ export const deposite_token = async (wallet, connection, amount, MINT_ADDRESS) =
             tokenVaultAta,
             TOKEN_VAULT_ADDRESS,
             MINT_ADDRESS,
+            TOKEN_PROGRAM_ID
         );
 
     transaction.add(tokenVaultAtaInstruction);
 
-    const mint = await provider.connection.getTokenSupply(MINT_ADDRESS);
+    const mint = await connection.getTokenSupply(MINT_ADDRESS);
     const decimals = mint.value.decimals;
     let send_amount = amount * 10 ** decimals;
-
-    console.log("mint =>", mint)
 
     transaction.add(
         await program.methods
             .depositeToken(new anchor.BN(send_amount))
             .accounts({
+                mintToken: MINT_ADDRESS,
                 userAta: userAta,
                 tokenVaultAta: tokenVaultAta,
-                mintToken: MINT_ADDRESS
+                tokenProgram: TOKEN_PROGRAM_ID
             })
             .instruction()
     );

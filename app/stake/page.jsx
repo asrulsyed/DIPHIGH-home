@@ -2,28 +2,28 @@
 
 import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa6"
-import { useConnection, useAnchorWallet } from "@solana/wallet-adapter-react";
-import { deposite_token } from "@/app/anchor/setup";
-import { MINT_ADDRESS } from "@/app/constant";
+import { deposite_token } from "@/anchor/setup";
+import { MINT_ADDRESS } from "@/constant";
+import { useWeb3 } from "@/hook/useweb3";
 const Stake = () => {
   const [token, setToken] = useState("DIPHIGH");
   const [amount, setAmount] = useState(100);
   const [period, setPeriod] = useState(15);
-  const { connection } = useConnection();
-  const wallet = useAnchorWallet()
   const periods = [15, 30, 60, 180];
-
+  const { provider, userWallet, userConnection, program } = useWeb3()
   const deposite = async (amount) => {
-    if (!wallet || !connection) {
+    if (!userWallet || !userConnection) {
       console.error("please connect wallet")
       return
     }
-    console.log("wallet =>", wallet.publicKey.toBase58())
-    console.log("connect =>", connection)
+    console.log("wallet in page =>", userWallet.publicKey.toBase58())
+    console.log("connect in page =>", userConnection)
 
     const tx = await deposite_token(
-      wallet,
-      connection,
+      userWallet,
+      userConnection,
+      provider,
+      program,
       amount,
       MINT_ADDRESS
     )

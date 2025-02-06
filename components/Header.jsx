@@ -71,22 +71,22 @@ const Header = () => {
         </div>
       </div>
 
-      {(endpoint === 'dashboard' && publicKey) && <div className="w-full h-[56px] flex items-center justify-between">
+      {(publicKey) && <div className="w-full h-[56px] flex items-center justify-between">
         <div className="h-full flex justify-center items-center gap-6">
           <Link
-            href="/dashboard/dashboard"
+            href="/dashboard"
             className={`border border-transparent h-full flex items-center justify-center hover:border-b-white box-content !text-textHeader hover:!text-white transition-all duration-150 ease-in-out ${path === 'dashboard' ? 'border-b-white !text-white glass-button' : ''} overflow-hidden relative`}
           >
             Dashboard
           </Link>
           <Link
-            href="/dashboard/stake"
+            href="/stake"
             className={`border border-transparent h-full flex items-center justify-center hover:border-b-white box-content !text-textHeader hover:!text-white transition-all duration-150 ease-in-out ${path === 'stake' ? 'border-b-white !text-white glass-button' : ''} overflow-hidden relative`}
           >
             Stake
           </Link>
           <Link
-            href="/dashboard/unstake"
+            href="/unstake"
             className={`border border-transparent h-full flex items-center justify-center hover:border-b-white box-content !text-textHeader hover:!text-white transition-all duration-150 ease-in-out ${path === 'unstake' ? 'border-b-white !text-white glass-button' : ''} overflow-hidden relative`}
           >
             Unstake
