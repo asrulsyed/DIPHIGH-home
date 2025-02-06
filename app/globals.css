@@ -1,0 +1,153 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  html {
+    --bg-header: rgba(255, 255, 255, 0.03);
+    --bg-button: rgba(255, 255, 255, 0.08);
+    --bg-button-hover: rgba(255, 255, 255, 0.1);
+    --border-header: rgba(255, 255, 255, 0.15);
+    --border-button: rgba(255, 255, 255, 0.13);
+    --border-footer: rgba(119, 119, 119, 0.7);
+    --text-header: rgba(119, 119, 119, 1);
+    --text-footer-title: rgba(214, 214, 214, 1);
+    --text-button: rgba(255, 255, 255, 1);
+    --text-graph: rgba(255, 255, 255, 0.8);
+    --text-white-button: rgba(0, 0, 0, 1);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* To hide scrollbar completely while keeping scroll functionality */
+body {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+body::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari and Opera */
+}
+
+.glass-button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  width: 80%;
+  height: 20px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  filter: blur(8px);
+}
+
+
+.text-shadow {
+  text-shadow: 0px 0px 6px rgba(255, 255, 255, 1);
+}
+
+.box-shadow {
+  box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, 1);
+}
+
+.gradient-border {
+  border-bottom: 0.5px solid;
+  border-image: linear-gradient(to right,
+      rgba(119, 119, 119, 0) 0%,
+      rgba(119, 119, 119, 1) 10%,
+      rgba(119, 119, 119, 1) 90%,
+      rgba(119, 119, 119, 0) 100%) 0.5;
+}
+
+.start-bg {
+  background-image: url('/start-bg.png');
+  background-size: 100vw auto;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.footer-border {
+  border-bottom: 2px solid;
+  border-image: linear-gradient(to right,
+      rgba(214, 214, 214, 0) 0%,
+      rgba(214, 214, 214, 1) 50%,
+      rgba(214, 214, 214, 0) 100%) 2;
+}
+
+.footer-border::after {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  width: 100%;
+  height: 100px;
+  z-index: -1;
+  background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.2) 60%, transparent 40%);
+  filter: blur(80px);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(-150px);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-442px);
+    opacity: 0;
+  }
+}
