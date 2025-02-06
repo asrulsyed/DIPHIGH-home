@@ -17,9 +17,6 @@ export default function RootLayout({ children }) {
       >
         <WalletContextProvider>
           <Web3Provider>
-            <p>
-              Hello
-            </p>
             <Header />
             {children}
             <Footer1 />

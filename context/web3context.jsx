@@ -18,9 +18,8 @@ const Web3Context = createContext(null)
 
 export const Web3Provider = ({ children }) => {
 
-    const { connection } = useConnection();
     const wallet = useAnchorWallet()
-
+    const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
     const [provider, setProvider] = useState()
     const [userConnection, setConnection] = useState()
     const [userWallet, setWallet] = useState()
@@ -48,17 +47,18 @@ export const Web3Provider = ({ children }) => {
 
     useEffect(() => {
         const setEnv = async () => {
+            console.log("context....")
             const _userConnection = connection;
             await setConnection(_userConnection)
             const _provider = createProvider(wallet, connection)
             await setProvider(_provider)
-            const _program = new Program(IDL, PROGRAMID, _provider);
+            const _program = new Program(IDL, PROGRAMID, { connection, });
             await setProgram(_program)
             const _userWallet = wallet
             await setWallet(_userWallet)
         }
-        if (wallet && connection)
-            setEnv()
+        // if (wallet)
+            // setEnv()
     }, [wallet, connection])
 
 

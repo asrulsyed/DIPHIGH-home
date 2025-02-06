@@ -1,32 +1,41 @@
 'use client'
-
+import * as anchor from "@coral-xyz/anchor";
 import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa6"
 import { deposite_token } from "@/anchor/setup";
 import { MINT_ADDRESS } from "@/constant";
 import { useWeb3 } from "@/hook/useweb3";
+import {
+  PublicKey,
+} from "@solana/web3.js"
+import { useWallet, useConnection, useAnchorWallet } from "@solana/wallet-adapter-react";
+import {
+  createAssociatedTokenAccountIdempotentInstruction,
+  getAssociatedTokenAddressSync,
+  TOKEN_PROGRAM_ID
+} from "@solana/spl-token";
+import { PROGRAMID } from "@/constant";
+import { getDecimal } from "@/anchor/setup";
+import { program } from "../../anchor/setup";
+
 const Stake = () => {
   const [token, setToken] = useState("DIPHIGH");
   const [amount, setAmount] = useState(100);
   const [period, setPeriod] = useState(15);
   const periods = [15, 30, 60, 180];
-  const { provider, userWallet, userConnection, program } = useWeb3()
+  const wallet = useAnchorWallet()
+  const { connection } = useConnection();
   const deposite = async (amount) => {
-    if (!userWallet || !userConnection) {
-      console.error("please connect wallet")
-      return
+    if (wallet) {
+      const tx = await deposite_token(
+        wallet,
+        MINT_ADDRESS,
+        amount
+      )
+      console.log("Tx =>", tx)
+    } else {
+      console.log("not connected wallet")
     }
-    console.log("wallet in page =>", userWallet.publicKey.toBase58())
-    console.log("connect in page =>", userConnection)
-
-    const tx = await deposite_token(
-      userWallet,
-      userConnection,
-      provider,
-      program,
-      amount,
-      MINT_ADDRESS
-    )
   }
 
   return (

@@ -1,10 +1,14 @@
 'use client'
 
+import { useWeb3 } from "@/hook/useweb3";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { HiOutlineSquares2X2 } from "react-icons/hi2"
 import { Area, AreaChart, ResponsiveContainer, Tooltip } from "recharts"
-import { useConnection, useAnchorWallet } from "@solana/wallet-adapter-react";
+import { getHistory, convertToBN, convertFromHextToInt, getDecimal, convertToLocalTime } from "@/anchor/setup";
+import { MINT_ADDRESS, PROGRAMID } from "@/constant";
+import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const CustomTooltip = ({ days, active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -18,6 +22,43 @@ const CustomTooltip = ({ days, active, payload, label }) => {
     )
   }
   return null;
+}
+
+const HistoryItemComponent = ({ amount, startTime, endTime }) => {
+  return (
+    <tr className="h-[40px]">
+      <th className="text-left">
+        <div className="flex items-center gap-2 w-[100px]">
+          {amount}
+        </div>
+      </th>
+      <th className="pl-7 text-left">
+        <div className="flex items-center w-[200px]">
+          {convertToLocalTime(startTime)}
+        </div>
+      </th>
+      <th className="pl-7 text-left">
+        <div className="flex items-center w-[200px]">
+          {convertToLocalTime(endTime)}
+        </div>
+      </th>
+      <th className="pl-7 text-left">
+        <div className="flex items-center w-[119px]">
+          Progress
+        </div>
+      </th>
+      <th className="pl-7 text-left">
+        <div className="flex items-center w-[168px]">
+          Withdrawal Status
+        </div>
+      </th>
+      <th className="pl-7 text-left">
+        <div className="flex items-center w-[60px]">
+          Actions
+        </div>
+      </th>
+    </tr>
+  )
 }
 
 const Dashboard = () => {
@@ -44,13 +85,26 @@ const Dashboard = () => {
     { name: 20, impression: 11030 },
   ];
 
-  const [stakingHistory, setStakingHistory] = useState(0);
-  const { connection } = useConnection();
-  const wallet = useAnchorWallet();
-
+  const [stakingHistory, setStakingHistory] = useState();
+  const [amount, setAmount] = useState([])
+  const [startTime, setStartTime] = useState([])
+  const [endTime, setEndTime] = useState([])
+  const { publicKey } = useWallet();
+  // const { provider, userConnection, userWallet, program } = useWeb3()
   useEffect(() => {
-    
-  }, [wallet, connection])
+    const _getHistory = async () => {
+      const _stakingHistory = await getHistory(MINT_ADDRESS, publicKey)
+      const decimals = await getDecimal(MINT_ADDRESS)
+      const amount = await convertToBN(_stakingHistory.stakingAmount, decimals)
+      const startTime = await convertFromHextToInt(_stakingHistory.stakingStart)
+      const endTime = await convertFromHextToInt(_stakingHistory.stakingEnd)
+      setAmount(amount)
+      setStartTime(startTime)
+      setEndTime(endTime)
+    }
+    if (publicKey)
+      _getHistory()
+  }, [publicKey])
 
   return (
     <div className="w-full min-h-screen overflow-y-auto overflow-x-hidden flex justify-center">
@@ -177,7 +231,15 @@ const Dashboard = () => {
                     colSpan={6}
                     className="px-6 py-8 text-center"
                   >
-                    No active staking positions.
+                    {
+                      amount.map((itm, idx) => (
+                        <HistoryItemComponent
+                          amount={amount[idx]}
+                          startTime={startTime[idx]}
+                          endTime={endTime[idx]}
+                        />
+                      ))
+                    }
                   </td>
                 </tr>
               </tbody>
