@@ -14,7 +14,7 @@ import {
     TOKEN_PROGRAM_ID
 } from "@solana/spl-token";
 import IDL from "./idl.json";
-import { PROGRAMID } from "@/constant";
+import { MINT_ADDRESS, PROGRAMID } from "@/constant";
 
 const programId = new PublicKey("ADbv96w7D9argjCubvNbf4oKdCFN8nU6yc4Y8ZDbdHnY");
 const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
@@ -110,14 +110,31 @@ export const deposite_token = async (
     const provider = createProvider(wallet, connection)
     const USER_ADDRESS = wallet.publicKey
     const program = getProgramInstance(wallet, connection);
-    
+
     console.log("provider =>", provider)
     console.log("wallet address =>", USER_ADDRESS.toBase58())
 
     const [tokenVaultPda] = PublicKey.findProgramAddressSync(
         [Buffer.from("token_vault")],
-        program.programId,
+        PROGRAMID,
     );
+
+    const [userInfoPDA] = PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("user_info_maker"),
+            MINT_ADDRESS.toBuffer()
+        ],
+        PROGRAMID
+    )
+
+    const [userHistoryPDA] = PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("user_history"),
+            MINT_ADDRESS.toBuffer(),
+            wallet.publicKey.toBuffer()
+        ],
+        PROGRAMID
+    )
 
     const TOKEN_VAULT_ADDRESS = tokenVaultPda
     const userAta = getAssociatedTokenAddressSync(
@@ -156,18 +173,25 @@ export const deposite_token = async (
     const decimals = mint.value.decimals;
     let send_amount = amount * 10 ** decimals;
 
-    // transaction.add(
-    const tx1 = await program.methods
-        .depositeToken(new anchor.BN(send_amount))
-        .accounts({
-            userAta: userAta,
-            tokenVaultAta: tokenVaultAta,
-            mintToken: MINT_ADDRESS
-        }).instruction()
-    // );
-    transaction.add(tx1)
+    transaction.add(
+        await program.methods
+            .depositeToken(new anchor.BN(send_amount))
+            .accounts({
+                mintToken: MINT_ADDRESS,
+                userAta: userAta,
+                tokenVault: TOKEN_VAULT_ADDRESS,
+                tokenVaultAta: tokenVaultAta,
+                signer: wallet.publicKey,
+                userInfoMaker: userInfoPDA,
+                userHistory: userHistoryPDA,
+                tokenProgram: TOKEN_PROGRAM_ID,
+                systemProgram: SystemProgram.programId,
+
+            }).instruction()
+    )
 
     const tx = await provider.sendAndConfirm(transaction)
+
     return tx
 }
 
@@ -176,6 +200,7 @@ export const getHistory = async (
     mintAddress,
     wallet,
 ) => {
+    const program = getProgramInstance(wallet, connection);
     const [userHistoryPDA] = PublicKey.findProgramAddressSync(
         [
             Buffer.from("user_history"),

@@ -2,7 +2,7 @@
 import * as anchor from "@coral-xyz/anchor";
 import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa6"
-import { deposite_token } from "@/anchor/setup";
+import { deposite_token, test_transaction } from "@/anchor/setup";
 import { MINT_ADDRESS } from "@/constant";
 import { useWeb3 } from "@/hook/useweb3";
 import {

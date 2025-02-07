@@ -1,606 +1,635 @@
 {
-    "version": "0.1.0",
-    "name": "staking_contract",
-    "instructions": [
-      {
-        "name": "initialize",
-        "accounts": [
-          {
-            "name": "user",
-            "isMut": true,
-            "isSigner": true
-          },
-          {
-            "name": "mintToken",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "userInfoMaker",
-            "isMut": true,
-            "isSigner": false,
-            "pda": {
-              "seeds": [
-                {
-                  "kind": "const",
-                  "type": "string",
-                  "value": "user_info_maker"
-                },
-                {
-                  "kind": "account",
-                  "type": "publicKey",
-                  "account": "Mint",
-                  "path": "mint_token"
-                }
-              ]
-            }
-          },
-          {
-            "name": "tokenVault",
-            "isMut": true,
-            "isSigner": false,
-            "pda": {
-              "seeds": [
-                {
-                  "kind": "const",
-                  "type": "string",
-                  "value": "token_vault"
-                }
-              ]
-            }
-          },
-          {
-            "name": "systemProgram",
-            "isMut": false,
-            "isSigner": false
-          }
-        ],
-        "args": []
-      },
-      {
-        "name": "createToken",
-        "accounts": [
-          {
-            "name": "mintToken",
-            "isMut": true,
-            "isSigner": true
-          },
-          {
-            "name": "signer",
-            "isMut": true,
-            "isSigner": true
-          },
-          {
-            "name": "tokenAccount",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "systemProgram",
-            "isMut": false,
-            "isSigner": false
-          },
-          {
-            "name": "tokenProgram",
-            "isMut": false,
-            "isSigner": false
-          },
-          {
-            "name": "associatedTokenProgram",
-            "isMut": false,
-            "isSigner": false
-          },
-          {
-            "name": "rent",
-            "isMut": false,
-            "isSigner": false
-          }
-        ],
-        "args": [
-          {
-            "name": "decimals",
-            "type": "u8"
-          },
-          {
-            "name": "amount",
-            "type": "u64"
-          }
-        ]
-      },
-      {
-        "name": "tokenTransfer",
-        "accounts": [
-          {
-            "name": "mintToken",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "fromAccount",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "toAccount",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "signer",
-            "isMut": true,
-            "isSigner": true
-          },
-          {
-            "name": "systemProgram",
-            "isMut": false,
-            "isSigner": false
-          },
-          {
-            "name": "tokenProgram",
-            "isMut": false,
-            "isSigner": false
-          },
-          {
-            "name": "associatedTokenProgram",
-            "isMut": false,
-            "isSigner": false
-          }
-        ],
-        "args": [
-          {
-            "name": "amount",
-            "type": "u64"
-          }
-        ]
-      },
-      {
-        "name": "depositeToken",
-        "accounts": [
-          {
-            "name": "mintToken",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "userAta",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "tokenVault",
-            "isMut": true,
-            "isSigner": false,
-            "pda": {
-              "seeds": [
-                {
-                  "kind": "const",
-                  "type": "string",
-                  "value": "token_vault"
-                }
-              ]
-            }
-          },
-          {
-            "name": "tokenVaultAta",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "signer",
-            "isMut": true,
-            "isSigner": true
-          },
-          {
-            "name": "userInfoMaker",
-            "isMut": true,
-            "isSigner": false,
-            "pda": {
-              "seeds": [
-                {
-                  "kind": "const",
-                  "type": "string",
-                  "value": "user_info_maker"
-                },
-                {
-                  "kind": "account",
-                  "type": "publicKey",
-                  "account": "Mint",
-                  "path": "mint_token"
-                }
-              ]
-            }
-          },
-          {
-            "name": "userHistory",
-            "isMut": true,
-            "isSigner": false,
-            "pda": {
-              "seeds": [
-                {
-                  "kind": "const",
-                  "type": "string",
-                  "value": "user_history"
-                },
-                {
-                  "kind": "account",
-                  "type": "publicKey",
-                  "account": "Mint",
-                  "path": "mint_token"
-                },
-                {
-                  "kind": "account",
-                  "type": "publicKey",
-                  "path": "signer"
-                }
-              ]
-            }
-          },
-          {
-            "name": "tokenProgram",
-            "isMut": false,
-            "isSigner": false
-          }
-        ],
-        "args": [
-          {
-            "name": "amount",
-            "type": "u64"
-          }
-        ]
-      },
-      {
-        "name": "claimRewardToken",
-        "accounts": [
-          {
-            "name": "mintToken",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "userAta",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "tokenVaultAta",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "signer",
-            "isMut": true,
-            "isSigner": true
-          },
-          {
-            "name": "userInfoMaker",
-            "isMut": true,
-            "isSigner": false,
-            "pda": {
-              "seeds": [
-                {
-                  "kind": "const",
-                  "type": "string",
-                  "value": "user_info_maker"
-                },
-                {
-                  "kind": "account",
-                  "type": "publicKey",
-                  "account": "Mint",
-                  "path": "mint_token"
-                }
-              ]
-            }
-          },
-          {
-            "name": "userHistory",
-            "isMut": true,
-            "isSigner": false,
-            "pda": {
-              "seeds": [
-                {
-                  "kind": "const",
-                  "type": "string",
-                  "value": "user_history"
-                },
-                {
-                  "kind": "account",
-                  "type": "publicKey",
-                  "account": "Mint",
-                  "path": "mint_token"
-                },
-                {
-                  "kind": "account",
-                  "type": "publicKey",
-                  "path": "signer"
-                }
-              ]
-            }
-          },
-          {
-            "name": "tokenVault",
-            "isMut": true,
-            "isSigner": false,
-            "pda": {
-              "seeds": [
-                {
-                  "kind": "const",
-                  "type": "string",
-                  "value": "token_vault"
-                }
-              ]
-            }
-          },
-          {
-            "name": "systemProgram",
-            "isMut": false,
-            "isSigner": false
-          },
-          {
-            "name": "tokenProgram",
-            "isMut": false,
-            "isSigner": false
-          },
-          {
-            "name": "associatedTokenProgram",
-            "isMut": false,
-            "isSigner": false
-          }
-        ],
-        "args": []
-      },
-      {
-        "name": "withdrawToken",
-        "accounts": [
-          {
-            "name": "mintToken",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "userAta",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "tokenVaultAta",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "signer",
-            "isMut": true,
-            "isSigner": true
-          },
-          {
-            "name": "userInfoMaker",
-            "isMut": true,
-            "isSigner": false,
-            "pda": {
-              "seeds": [
-                {
-                  "kind": "const",
-                  "type": "string",
-                  "value": "user_info_maker"
-                },
-                {
-                  "kind": "account",
-                  "type": "publicKey",
-                  "account": "Mint",
-                  "path": "mint_token"
-                }
-              ]
-            }
-          },
-          {
-            "name": "userHistory",
-            "isMut": true,
-            "isSigner": false,
-            "pda": {
-              "seeds": [
-                {
-                  "kind": "const",
-                  "type": "string",
-                  "value": "user_history"
-                },
-                {
-                  "kind": "account",
-                  "type": "publicKey",
-                  "account": "Mint",
-                  "path": "mint_token"
-                },
-                {
-                  "kind": "account",
-                  "type": "publicKey",
-                  "path": "signer"
-                }
-              ]
-            }
-          },
-          {
-            "name": "tokenVault",
-            "isMut": true,
-            "isSigner": false,
-            "pda": {
-              "seeds": [
-                {
-                  "kind": "const",
-                  "type": "string",
-                  "value": "token_vault"
-                }
-              ]
-            }
-          },
-          {
-            "name": "systemProgram",
-            "isMut": false,
-            "isSigner": false
-          },
-          {
-            "name": "tokenProgram",
-            "isMut": false,
-            "isSigner": false
-          },
-          {
-            "name": "associatedTokenProgram",
-            "isMut": false,
-            "isSigner": false
-          }
-        ],
-        "args": [
-          {
-            "name": "index",
-            "type": "u64"
-          }
-        ]
-      },
-      {
-        "name": "test",
-        "accounts": [
-          {
-            "name": "user",
-            "isMut": true,
-            "isSigner": true
-          },
-          {
-            "name": "mintToken",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "userInfoMaker",
-            "isMut": true,
-            "isSigner": false,
-            "pda": {
-              "seeds": [
-                {
-                  "kind": "const",
-                  "type": "string",
-                  "value": "user_info_maker"
-                },
-                {
-                  "kind": "account",
-                  "type": "publicKey",
-                  "account": "Mint",
-                  "path": "mint_token"
-                }
-              ]
-            }
-          }
-        ],
-        "args": []
-      },
-      {
-        "name": "initializeUserHistory",
-        "accounts": [
-          {
-            "name": "user",
-            "isMut": true,
-            "isSigner": true
-          },
-          {
-            "name": "mintToken",
-            "isMut": true,
-            "isSigner": false
-          },
-          {
-            "name": "userHistory",
-            "isMut": true,
-            "isSigner": false,
-            "pda": {
-              "seeds": [
-                {
-                  "kind": "const",
-                  "type": "string",
-                  "value": "user_history"
-                },
-                {
-                  "kind": "account",
-                  "type": "publicKey",
-                  "account": "Mint",
-                  "path": "mint_token"
-                },
-                {
-                  "kind": "account",
-                  "type": "publicKey",
-                  "path": "user"
-                }
-              ]
-            }
-          },
-          {
-            "name": "systemProgram",
-            "isMut": false,
-            "isSigner": false
-          }
-        ],
-        "args": []
-      }
-    ],
-    "accounts": [
-      {
-        "name": "UserInfoMaker",
-        "type": {
-          "kind": "struct",
-          "fields": [
-            {
-              "name": "amount",
-              "type": "u64"
-            },
-            {
-              "name": "bump",
-              "type": "u8"
-            }
-          ]
-        }
-      },
-      {
-        "name": "AdminManager",
-        "type": {
-          "kind": "struct",
-          "fields": [
-            {
-              "name": "totalSupply",
-              "type": "u64"
-            },
-            {
-              "name": "bump",
-              "type": "u8"
-            }
-          ]
-        }
-      },
-      {
-        "name": "UserHistory",
-        "type": {
-          "kind": "struct",
-          "fields": [
-            {
-              "name": "stakingAmount",
-              "type": {
-                "vec": "u64"
+  "version": "0.1.0",
+  "name": "staking_contract",
+  "instructions": [
+    {
+      "name": "initialize",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "mintToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userInfoMaker",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "user_info_maker"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint_token"
               }
-            },
-            {
-              "name": "stakingStart",
-              "type": {
-                "vec": "u64"
+            ]
+          }
+        },
+        {
+          "name": "tokenVault",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "token_vault"
               }
-            },
-            {
-              "name": "stakingEnd",
-              "type": {
-                "vec": "u64"
-              }
-            },
-            {
-              "name": "bump",
-              "type": "u8"
-            }
-          ]
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
-      }
-    ],
-    "metadata": {
-      "address": "Aw7gsrwSAE6H2UxXjXzZcyhwPPr2G4NCPH6My1CtSWX"
+      ],
+      "args": []
+    },
+    {
+      "name": "createToken",
+      "accounts": [
+        {
+          "name": "mintToken",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "tokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "decimals",
+          "type": "u8"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "tokenTransfer",
+      "accounts": [
+        {
+          "name": "mintToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "fromAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "toAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "depositeToken",
+      "accounts": [
+        {
+          "name": "mintToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVault",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "token_vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tokenVaultAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "userInfoMaker",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "user_info_maker"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint_token"
+              }
+            ]
+          }
+        },
+        {
+          "name": "userHistory",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "user_history"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint_token"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "claimRewardToken",
+      "accounts": [
+        {
+          "name": "mintToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "userInfoMaker",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "user_info_maker"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint_token"
+              }
+            ]
+          }
+        },
+        {
+          "name": "userHistory",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "user_history"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint_token"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tokenVault",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "token_vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdrawToken",
+      "accounts": [
+        {
+          "name": "mintToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "userInfoMaker",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "user_info_maker"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint_token"
+              }
+            ]
+          }
+        },
+        {
+          "name": "userHistory",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "user_history"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint_token"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tokenVault",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "token_vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "test",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "mintToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userInfoMaker",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "user_info_maker"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint_token"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initializeUserHistory",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "mintToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userHistory",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "user_history"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint_token"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
-  }
+  ],
+  "accounts": [
+    {
+      "name": "UserInfoMaker",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AdminManager",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "totalSupply",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserHistory",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "stakingAmount",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "stakingStart",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "stakingEnd",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "TokenLocked",
+      "msg": "TokenLocked"
+    },
+    {
+      "code": 6001,
+      "name": "ActiveVestingExists",
+      "msg": "Active vesting period exists"
+    },
+    {
+      "code": 6002,
+      "name": "AllocationAmountTooLarge",
+      "msg": "Allocation amount too large"
+    },
+    {
+      "code": 6003,
+      "name": "SaleNotStarted",
+      "msg": "Sale not started"
+    },
+    {
+      "code": 6004,
+      "name": "SaleNotEnded",
+      "msg": "Sale not ended"
+    }
+  ]
+}
