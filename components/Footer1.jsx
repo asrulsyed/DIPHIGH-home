@@ -14,7 +14,7 @@ const Footer1 = () => {
       {endpoint === 'dashboard' && <footer className="fixed bottom-0 left-0 bg-bgHeader border-t border-borderHeader w-full md:px-10 lg:px-[78px] z-50 backdrop-blur-[200px] py-3 h-[64px] flex items-center justify-between px-4">
         <Link href="/">
           <Image
-            src={'/logo.svg'}
+            src='/logo.svg'
             width={114}
             height={38}
             alt="Logo"

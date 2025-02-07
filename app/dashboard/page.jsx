@@ -16,7 +16,7 @@ const CustomTooltip = ({ days, active, payload, label }) => {
       <div className="bg-textWhiteButton border-bgButtonHover px-2 py-1 text-white border">
         <p className="text-lg font-semibold text-right">{`$${payload[0].value.toFixed(2).toLocaleString()}`}</p>
         <p className="pr-2 pb-2 text-xs text-right">
-          {days === 90 ? moment(label).format('MMMM YYYY') : moment(label).format('D MMM YYYY')}
+          {days === 90 ? moment(new Date(label)).format('MMMM YYYY') : moment(new Date(label)).format('D MMM YYYY')}
         </p>
       </div>
     )
@@ -24,37 +24,37 @@ const CustomTooltip = ({ days, active, payload, label }) => {
   return null;
 }
 
-const HistoryItemComponent = ({ amount, startTime, endTime }) => {
+const HistoryItemComponent = ({ amount, startTime, endTime, className }) => {
   return (
-    <tr className="h-[40px]">
-      <th className="text-left">
-        <div className="flex items-center gap-2 w-[100px]">
+    <tr className={`${className} h-[56px]`}>
+      <th className="pl-8 text-left md:pl-12">
+        <div className="flex items-center gap-2 text-base font-normal text-white">
           {amount}
         </div>
       </th>
-      <th className="pl-7 text-left">
-        <div className="flex items-center w-[200px]">
-          {convertToLocalTime(startTime)}
+      <th className="text-left">
+        <div className="flex items-center text-base font-normal text-white">
+          {moment(new Date(convertToLocalTime(startTime))).format('YYYY/MM/DD')}
         </div>
       </th>
-      <th className="pl-7 text-left">
-        <div className="flex items-center w-[200px]">
-          {convertToLocalTime(endTime)}
+      <th className="text-left">
+        <div className="flex items-center text-base font-normal text-white">
+          {startTime > endTime ? '' : moment(new Date(convertToLocalTime(endTime))).format('YYYY/MM/DD')}
         </div>
       </th>
-      <th className="pl-7 text-left">
-        <div className="flex items-center w-[119px]">
-          Progress
+      <th className="text-left">
+        <div className="flex items-center text-base font-normal text-white">
+          Locked
         </div>
       </th>
-      <th className="pl-7 text-left">
-        <div className="flex items-center w-[168px]">
-          Withdrawal Status
+      <th className="text-left">
+        <div className="flex items-center text-base font-normal text-white">
+        {startTime > endTime ? 'Yes' : 'No'}
         </div>
       </th>
-      <th className="pl-7 text-left">
-        <div className="flex items-center w-[60px]">
-          Actions
+      <th className="text-left">
+        <div className="flex items-center text-base font-normal text-white">
+
         </div>
       </th>
     </tr>
@@ -85,7 +85,7 @@ const Dashboard = () => {
     { name: 20, impression: 11030 },
   ];
 
-  const [stakingHistory, setStakingHistory] = useState();
+  const [stakingHistory, setStakingHistory] = useState(0);
   const [amount, setAmount] = useState([])
   const [startTime, setStartTime] = useState([])
   const [endTime, setEndTime] = useState([])
@@ -128,7 +128,7 @@ const Dashboard = () => {
                       <stop offset="95%" stopColor="#777777" stopOpacity={0.05} />
                     </linearGradient>
                   </defs>
-                  <Tooltip content={<CustomTooltip days={parseInt(name)} />} />
+                  <Tooltip content={<CustomTooltip days={parseInt(data.name)} />} />
                   <Area dataKey="impression" stroke="#ffffff" fill="url(#colorImpression)" />
                 </AreaChart>
               </ResponsiveContainer>
@@ -147,7 +147,7 @@ const Dashboard = () => {
                       <stop offset="95%" stopColor="#777777" stopOpacity={0.05} />
                     </linearGradient>
                   </defs>
-                  <Tooltip content={<CustomTooltip days={parseInt(name)} />} />
+                  <Tooltip content={<CustomTooltip days={parseInt(data.name)} />} />
                   <Area dataKey="impression" stroke="#ffffff" fill="url(#colorImpression)" />
                 </AreaChart>
               </ResponsiveContainer>
@@ -166,7 +166,7 @@ const Dashboard = () => {
                       <stop offset="95%" stopColor="#777777" stopOpacity={0.05} />
                     </linearGradient>
                   </defs>
-                  <Tooltip content={<CustomTooltip days={parseInt(name)} />} />
+                  <Tooltip content={<CustomTooltip days={parseInt(data.name)} />} />
                   <Area dataKey="impression" stroke="#ffffff" fill="url(#colorImpression)" />
                 </AreaChart>
               </ResponsiveContainer>
@@ -191,60 +191,60 @@ const Dashboard = () => {
               </button>
             </div>
           </div>
-          <div className="border-[0.5px] border-textHeader rounded-xl bg-transparent overflow-x-scroll">
+          <div className="border-[0.5px] border-textHeader rounded-xl bg-transparent overflow-x-auto">
             <table className="w-full text-base text-white">
               <thead>
                 <tr className="h-[84px] border-b-[0.5px] border-textHeader">
-                  <th className="pl-7 text-left">
-                    <div className="flex items-center gap-2 w-[100px]">
+                  <th className="pl-8 md:pl-12 text-left min-w-[120px]">
+                    <div className="flex items-center gap-2">
                       Amount
                     </div>
                   </th>
-                  <th className="pl-7 text-left">
-                    <div className="flex items-center w-[200px]">
+                  <th className="min-w-[120px] text-left">
+                    <div className="flex items-center text-nowrap">
                       Start Date
                     </div>
                   </th>
-                  <th className="pl-7 text-left">
-                    <div className="flex items-center w-[200px]">
+                  <th className="min-w-[120px] text-left">
+                    <div className="flex items-center text-nowrap">
                       End Date
                     </div>
                   </th>
-                  <th className="pl-7 text-left">
-                    <div className="flex items-center w-[119px]">
+                  <th className="text-left min-w-[90px]">
+                    <div className="flex items-center">
                       Progress
                     </div>
                   </th>
-                  <th className="pl-7 text-left">
-                    <div className="flex items-center w-[168px]">
+                  <th className="text-left min-w-[160px]">
+                    <div className="flex items-center text-nowrap">
                       Withdrawal Status
                     </div>
                   </th>
-                  <th className="px-7 text-left">
-                    <div className="flex items-center w-[60px]">
+                  <th className="pr-8 text-left md:pr-12 min-w-[100px]">
+                    <div className="flex items-center">
                       Actions
                     </div>
                   </th>
                 </tr>
               </thead>
-              <tbody >
-                <tr>
-                  <td
-                    colSpan={6}
-                    className="px-6 py-8 text-center"
-                  >
-                    {amount.length == 0 ?
-                      <p>No active staking positions</p> :
-                      amount.map((itm, idx) => (
-                        <HistoryItemComponent
-                          amount={amount[idx]}
-                          startTime={startTime[idx]}
-                          endTime={endTime[idx]}
-                        />
-                      ))
-                    }
-                  </td>
-                </tr>
+              <tbody>
+                {amount.length == 0 ?
+                  <tr>
+                    <td colSpan={6} className="py-5 text-center">
+                      <p>No active staking positions</p>
+                    </td>
+                  </tr>
+                  :
+                  amount.map((itm, idx) => (
+                    <HistoryItemComponent
+                      key={idx}
+                      amount={amount[idx]}
+                      startTime={startTime[idx]}
+                      endTime={endTime[idx]}
+                      className={idx % 2 === 0 ? "bg-bgHeader" : "bg-transparent"}
+                    />
+                  ))
+                }
               </tbody>
 
             </table>

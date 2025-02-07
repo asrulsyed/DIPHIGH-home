@@ -11,11 +11,11 @@ const Hero = () => {
   const { publicKey } = useWallet();
   const router = useRouter();
 
-  // useEffect(() => {
-  //   if (publicKey) {
-  //     router.push('/dashboard');
-  //   }
-  // }, [publicKey]);
+  useEffect(() => {
+    if (publicKey) {
+      router.push('/dashboard');
+    }
+  }, [publicKey]);
 
   return (
     <div className="hero-bg max-w-[1154px] w-full mt-[120px] mb-[74px] flex flex-col items-center relative px-6 text-center">
@@ -27,7 +27,7 @@ const Hero = () => {
     border rounded-lg cursor-pointer transition-all duration-200 ease-in-out h-[46px] w-[170px] flex justify-center items-center  text-base  tracking-[0.32px] group relative`}
         >
           {publicKey ? (
-            router.push('/dashboard')
+            <Link href="/dashboard">Go to Dashboard</Link>
           ) : (
             <div onClick={() => setVisible(true)}>
               Connect Wallet

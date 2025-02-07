@@ -67,7 +67,7 @@ const Footer = () => {
           <Link href={'/'}>
             <Image
               src={"/logo.svg"}
-              width={160}
+              width={114}
               height={38}
               alt="log"
               className="cursor-pointer h-[38px] w-auto"

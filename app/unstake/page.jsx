@@ -61,7 +61,7 @@ const Unstake = () => {
                     <stop offset="95%" stopColor="#777777" stopOpacity={0.05} />
                   </linearGradient>
                 </defs>
-                <Tooltip content={<CustomTooltip days={parseInt(name)} />} />
+                <Tooltip content={<CustomTooltip days={parseInt(data.name)} />} />
                 <Area dataKey="impression" stroke="#ffffff" fill="url(#colorImpression)" />
               </AreaChart>
             </ResponsiveContainer>
@@ -80,7 +80,7 @@ const Unstake = () => {
                     <stop offset="95%" stopColor="#777777" stopOpacity={0.05} />
                   </linearGradient>
                 </defs>
-                <Tooltip content={<CustomTooltip days={parseInt(name)} />} />
+                <Tooltip content={<CustomTooltip days={parseInt(data.name)} />} />
                 <Area dataKey="impression" stroke="#ffffff" fill="url(#colorImpression)" />
               </AreaChart>
             </ResponsiveContainer>
@@ -99,7 +99,7 @@ const Unstake = () => {
                     <stop offset="95%" stopColor="#777777" stopOpacity={0.05} />
                   </linearGradient>
                 </defs>
-                <Tooltip content={<CustomTooltip days={parseInt(name)} />} />
+                <Tooltip content={<CustomTooltip days={parseInt(data.name)} />} />
                 <Area dataKey="impression" stroke="#ffffff" fill="url(#colorImpression)" />
               </AreaChart>
             </ResponsiveContainer>

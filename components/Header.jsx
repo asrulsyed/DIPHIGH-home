@@ -13,8 +13,7 @@ import WalletButton from "./WalletButton";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
-  const endpoint = pathname.split('/')[1];
-  const path = pathname.split('/')[2];
+  const path = pathname.split('/')[1];
   const { setVisible } = useWalletModal();
   const { publicKey, disconnect } = useWallet();
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -75,19 +74,19 @@ const Header = () => {
         <div className="h-full flex justify-center items-center gap-6">
           <Link
             href="/dashboard"
-            className={`border border-transparent h-full flex items-center justify-center hover:border-b-white box-content !text-textHeader hover:!text-white transition-all duration-150 ease-in-out ${path === 'dashboard' ? 'border-b-white !text-white glass-button' : ''} overflow-hidden relative`}
+            className={`border border-transparent h-full flex items-center justify-center hover:border-b-white box-content !text-textHeader hover:!text-white hover:!glass-button transition-all duration-150 ease-in-out ${path === 'dashboard' ? 'border-b-white !text-white glass-button' : ''} overflow-hidden relative`}
           >
             Dashboard
           </Link>
           <Link
             href="/stake"
-            className={`border border-transparent h-full flex items-center justify-center hover:border-b-white box-content !text-textHeader hover:!text-white transition-all duration-150 ease-in-out ${path === 'stake' ? 'border-b-white !text-white glass-button' : ''} overflow-hidden relative`}
+            className={`border border-transparent h-full flex items-center justify-center hover:border-b-white box-content !text-textHeader hover:!text-white hover:!glass-button transition-all duration-150 ease-in-out ${path === 'stake' ? 'border-b-white !text-white glass-button' : ''} overflow-hidden relative`}
           >
             Stake
           </Link>
           <Link
             href="/unstake"
-            className={`border border-transparent h-full flex items-center justify-center hover:border-b-white box-content !text-textHeader hover:!text-white transition-all duration-150 ease-in-out ${path === 'unstake' ? 'border-b-white !text-white glass-button' : ''} overflow-hidden relative`}
+            className={`border border-transparent h-full flex items-center justify-center hover:border-b-white box-content !text-textHeader hover:!text-white hover:!glass-button transition-all duration-150 ease-in-out ${path === 'unstake' ? 'border-b-white !text-white glass-button' : ''} overflow-hidden relative`}
           >
             Unstake
           </Link>
