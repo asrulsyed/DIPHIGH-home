@@ -90,17 +90,19 @@ const Dashboard = () => {
   const [startTime, setStartTime] = useState([])
   const [endTime, setEndTime] = useState([])
   const { publicKey } = useWallet();
-  // const { provider, userConnection, userWallet, program } = useWeb3()
   useEffect(() => {
     const _getHistory = async () => {
-      const _stakingHistory = await getHistory(MINT_ADDRESS, publicKey)
-      const decimals = await getDecimal(MINT_ADDRESS)
-      const amount = await convertToBN(_stakingHistory.stakingAmount, decimals)
-      const startTime = await convertFromHextToInt(_stakingHistory.stakingStart)
-      const endTime = await convertFromHextToInt(_stakingHistory.stakingEnd)
-      setAmount(amount)
-      setStartTime(startTime)
-      setEndTime(endTime)
+      try {
+        const _stakingHistory = await getHistory(MINT_ADDRESS, publicKey)
+        const decimals = await getDecimal(MINT_ADDRESS)
+        const amount = await convertToBN(_stakingHistory.stakingAmount, decimals)
+        const startTime = await convertFromHextToInt(_stakingHistory.stakingStart)
+        const endTime = await convertFromHextToInt(_stakingHistory.stakingEnd)
+        setAmount(amount)
+        setStartTime(startTime)
+        setEndTime(endTime)
+      } catch (err) {
+      }
     }
     if (publicKey)
       _getHistory()
@@ -231,7 +233,8 @@ const Dashboard = () => {
                     colSpan={6}
                     className="px-6 py-8 text-center"
                   >
-                    {
+                    {amount.length == 0 ?
+                      <p>No active staking positions</p> :
                       amount.map((itm, idx) => (
                         <HistoryItemComponent
                           amount={amount[idx]}
