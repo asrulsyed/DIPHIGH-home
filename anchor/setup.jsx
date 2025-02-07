@@ -16,7 +16,6 @@ import {
 import IDL from "./idl.json";
 import { MINT_ADDRESS, PROGRAMID } from "@/constant";
 
-const programId = new PublicKey("ADbv96w7D9argjCubvNbf4oKdCFN8nU6yc4Y8ZDbdHnY");
 const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
 // Initialize the program interface with the IDL, program ID, and connection.
@@ -35,7 +34,7 @@ export const createProvider = (wallet, connection) => {
 
 export const getProgramInstance = (wallet, connection) => {
     const provider = createProvider(wallet, connection);
-    return new Program(IDL, programId, provider);
+    return new Program(IDL, PROGRAMID, provider);
 };
 
 export const getDecimal = async (mintAddress) => {
