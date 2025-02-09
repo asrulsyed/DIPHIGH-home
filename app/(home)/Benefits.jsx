@@ -79,14 +79,14 @@ const Benefits = () => {
         </div>
       </div>
 
-      <div className="w-full flex flex-col items-center px-4">
+      <div className="flex flex-col items-center w-full px-4">
         <div className="relative w-full xl:max-w-[850px] max-w-[750px]">
           <div className="invisible flex flex-col items-center gap-[20px] xl:grid grid-cols-2 w-full rounded-t-2xl bg-textWhiteButton border-[0.5px] border-textHeader max-xl:pb-[152px] p-[58px] ">
             <div className="flex flex-col gap-8 max-xl:items-center max-xl:max-w-[350px]">
               <p className="text-xl font-semibold text-justify text-white">{benefits[(currentIndex + benefits.length) % benefits.length].title}</p>
-              <p className="text-textHeader text-sm leading-6 text-center xl:text-justify">{benefits[(currentIndex + benefits.length) % benefits.length].content}</p>
+              <p className="text-sm leading-6 text-center text-textHeader xl:text-justify">{benefits[(currentIndex + benefits.length) % benefits.length].content}</p>
             </div>
-            <div className="w-full h-full flex justify-center items-center max-xl:order-first">
+            <div className="flex items-center justify-center w-full h-full max-xl:order-first">
               <div className="w-10 h-10 bg-white blur-2xl" />
             </div>
           </div>
@@ -98,15 +98,15 @@ const Benefits = () => {
             >
               <div className="flex flex-col gap-8 max-xl:items-center max-xl:max-w-[350px]">
                 <p className="text-xl font-semibold text-justify text-white">{benefit.title}</p>
-                <p className="text-textHeader text-sm leading-6 text-center xl:text-justify">{benefit.content}</p>
+                <p className="text-sm leading-6 text-center text-textHeader xl:text-justify">{benefit.content}</p>
               </div>
-              <div className="w-full h-full flex justify-center items-center max-xl:order-first">
+              <div className="flex items-center justify-center w-full h-full max-xl:order-first">
                 <div className="w-10 h-10 bg-white blur-2xl" />
               </div>
             </div>
           ))}
           <div className="absolute h-1 bottom-0 left-0 right-0 bg-textHeader flex flex-col items-start justify-center max-xl:max-w-[200px] max-xl:left-1/2 max-xl:-translate-x-1/2 max-xl:-translate-y-7">
-            <div className="duration-50 transform h-full bg-white transition-all ease-linear" style={{ width: `${timeProgress}%` }} />
+            <div className="h-full transition-all ease-linear transform bg-white duration-50" style={{ width: `${timeProgress}%` }} />
           </div>
           <div className="absolute flex gap-10 max-xl:-translate-x-1/2 max-xl:bottom-16 max-xl:left-1/2 xl:-left-10 xl:-translate-x-full xl:-translate-y-1/2 xl:top-1/2 xl:flex-col">
             <button onClick={() => handleButton(1)} className="w-9 h-9 flex items-center justify-center bg-textWhiteButton border-[0.5px] border-textHeader rounded-sm hover:bg-bgButtonHover text-textHeader hover:text-white transition-colors duration-150 ease-in-out cursor-pointer">
@@ -126,7 +126,7 @@ const Benefits = () => {
           <path d="M0.872559 1C5.11602 1 9.18569 2.68571 12.1863 5.68629L55.3137 48.8137C58.3143 51.8143 62.384 53.5 66.6274 53.5H113" stroke="currentColor" strokeLinecap="round">
           </path>
         </svg>
-        <div className="border-textHeader h-full flex-1 border-t">
+        <div className="flex-1 h-full border-t border-textHeader">
         </div>
         <svg viewBox="0 0 113 54" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-[113px] text-textHeader">
           <path d="M0.872559 1C5.11602 1 9.18569 2.68571 12.1863 5.68629L55.3137 48.8137C58.3143 51.8143 62.384 53.5 66.6274 53.5H113" stroke="currentColor" strokeLinecap="round">

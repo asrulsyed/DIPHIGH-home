@@ -22,13 +22,13 @@ const Footer1 = () => {
           />
         </Link>
         <div className="flex items-center gap-4">
-          <div className="border-textHeader text-textFooterTitle hidden gap-4 pr-4 border-r md:flex">
+          <div className="hidden gap-4 pr-4 border-r border-textHeader text-textFooterTitle md:flex">
             <FaLinkedin className="w-[20px] h-[20px]" />
             <FaInstagram className="w-[20px] h-[20px]" />
             <FaTelegram className="w-[20px] h-[20px]" />
             <FaDiscord className="w-[20px] h-[20px]" />
           </div>
-          <div className="text-textHeader text-sm text-left">
+          <div className="text-sm text-left text-textHeader">
             Copyright &copy; 2025 DIPHIGH
           </div>
         </div>

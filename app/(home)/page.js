@@ -1,9 +1,9 @@
-import Benefits from "@/components/Benefits"
-import FAQ from "@/components/FAQ"
-import Footer from "@/components/Footer"
-import Hero from "@/components/Hero"
-import StakingSteps from "@/components/StakingSteps"
-import Start from "@/components/Start"
+import Benefits from "@/app/(home)/Benefits"
+import FAQ from "@/app/(home)/FAQ"
+import Footer from "@/app/(home)/Footer"
+import Hero from "@/app/(home)/Hero"
+import StakingSteps from "@/app/(home)/StakingSteps"
+import Start from "@/app/(home)/Start"
 import { useWeb3Provider } from "@/context/web3context"
 const Main = () => {
   return (
