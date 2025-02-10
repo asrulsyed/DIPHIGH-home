@@ -15,32 +15,32 @@ const HistoryItemComponent = ({ amount, startTime, endTime, className }) => {
   return (
     <tr className={`${className} h-[56px]`}>
       <th className="px-4 md:px-6">
-        <div className="flex items-center justify-center text-base font-normal text-white text-nowrap">
+        <div className="flex justify-center items-center text-base font-normal text-nowrap text-white">
           {amount}
         </div>
       </th>
       <th className="px-4 md:px-6">
-        <div className="flex items-center justify-center text-base font-normal text-white text-nowrap">
+        <div className="flex justify-center items-center text-base font-normal text-nowrap text-white">
           {moment(new Date(convertToLocalTime(startTime))).format('YYYY/MM/DD')}
         </div>
       </th>
       <th className="px-4 md:px-6">
-        <div className="flex items-center justify-center text-base font-normal text-white text-nowrap">
+        <div className="flex justify-center items-center text-base font-normal text-nowrap text-white">
           {moment(new Date(convertToLocalTime(startTime))).add(60, "days").format('YYYY/MM/DD')}
         </div>
       </th>
       <th className="px-4 md:px-6">
-        <div className="flex items-center justify-center text-base font-normal text-white text-nowrap">
+        <div className="flex justify-center items-center text-base font-normal text-nowrap text-white">
           %
         </div>
       </th>
       <th className="px-4 md:px-6">
-        <div className="flex items-center justify-center text-base font-normal text-white text-nowrap">
+        <div className="flex justify-center items-center text-base font-normal text-nowrap text-white">
           {isOver60Days ? "UnLocked" : "Locked"}
         </div>
       </th>
       <th className="px-4 md:px-6">
-        <div className="flex items-center justify-center gap-2 text-sm font-normal text-white">
+        <div className="flex justify-center items-center gap-2 text-sm font-normal text-white">
           {isOver60Days && (
             <>
               <button className="w-[100px] h-[32px] hover:bg-textFooterTitle rounded-[4px] hover:text-black bg-black border border-textHeader text-textFootTitle transition-colors duration-150 ease-linear">
@@ -62,6 +62,7 @@ const StakingLists = () => {
   const [startTime, setStartTime] = useState([])
   const [endTime, setEndTime] = useState([])
   const { publicKey } = useWallet();
+  
   useEffect(() => {
     const _getHistory = async () => {
       try {
@@ -88,32 +89,32 @@ const StakingLists = () => {
           <thead>
             <tr className="h-[84px] border-b-[0.5px] border-textHeader !px-8 md:!px-12">
               <th className="px-4 md:px-6">
-                <div className="flex items-center justify-center text-nowrap">
+                <div className="flex justify-center items-center text-nowrap">
                   Amount
                 </div>
               </th>
               <th className="px-4 md:px-6">
-                <div className="flex items-center justify-center text-nowrap">
+                <div className="flex justify-center items-center text-nowrap">
                   Start Date
                 </div>
               </th>
               <th className="px-4 md:px-6">
-                <div className="flex items-center justify-center text-nowrap">
+                <div className="flex justify-center items-center text-nowrap">
                   End Date
                 </div>
               </th>
               <th className="px-4 md:px-6">
-                <div className="flex items-center justify-center text-nowrap">
+                <div className="flex justify-center items-center text-nowrap">
                   APY
                 </div>
               </th>
               <th className="px-4 md:px-6 min-w-[180px]">
-                <div className="flex items-center justify-center text-nowrap">
+                <div className="flex justify-center items-center text-nowrap">
                   Staking Status
                 </div>
               </th>
               <th className="px-4 md:px-6 min-w-[240px]">
-                <div className="flex items-center justify-center">
+                <div className="flex justify-center items-center">
                   Actions
                 </div>
               </th>

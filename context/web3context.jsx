@@ -24,6 +24,13 @@ export const Web3Provider = ({ children }) => {
     const [userConnection, setConnection] = useState()
     const [userWallet, setWallet] = useState()
     const [program, setProgram] = useState()
+    const [amount, setAmount] = useState(0)
+    const [startTime, setStartTime] = useState()
+
+    const [endTime, setEndTime] = useState()
+    const [period, setPeriod] = useState()
+    const [apy, setApy] = useState()
+
 
     const createProvider = (_wallet, _connection) => {
         const _provider = new anchor.AnchorProvider(_connection, _wallet, {
@@ -37,13 +44,15 @@ export const Web3Provider = ({ children }) => {
         provider: provider,
         userConnection: userConnection,
         userWallet: userWallet,
-        program: program
-    }), [
-        provider,
-        connection,
-        wallet,
-        program
-    ])
+        program: program,
+
+    }),
+        [
+            provider,
+            connection,
+            wallet,
+            program
+        ])
 
     useEffect(() => {
         const setEnv = async () => {
@@ -58,7 +67,7 @@ export const Web3Provider = ({ children }) => {
             await setWallet(_userWallet)
         }
         // if (wallet)
-            // setEnv()
+        // setEnv()
     }, [wallet, connection])
 
 

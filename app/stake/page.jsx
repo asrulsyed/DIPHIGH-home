@@ -45,15 +45,17 @@ const Stake = () => {
       console.log("not connected wallet")
     }
   }
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   return (
-    <div className="flex justify-center w-full min-h-screen overflow-y-auto">
+    <div className="w-full min-h-screen overflow-y-auto flex justify-center">
       <div className="mt-[200px] mb-20 flex flex-col gap-6 max-w-[1056px] lg:w-full px-4 sm:px-10 items-center">
         <p className="text-4xl font-medium text-white leading-[56px] text-wrap text-center">Staking</p>
         <div className="border rounded-2xl border-textHeader bg-bgHeader px-[56px] py-[53px] max-w-[516px] flex flex-col gap-8">
           <div className="flex flex-col gap-4">
             <label htmlFor="amount" className="text-textFooterTitle text-[18px]">Select Token</label>
-            <div className="relative w-full ">
+            <div className="w-full relative">
               <div
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-full bg-textWhiteButton border border-borderHeader h-[48px] rounded-lg px-5 text-base font-semibold text-textFooterTitle cursor-pointer flex items-center justify-between"
@@ -71,7 +73,7 @@ const Stake = () => {
                         setSelectedToken(option);
                         setIsOpen(false);
                       }}
-                      className="px-5 py-3 font-semibold transition-colors cursor-pointer hover:bg-borderHeader text-textFooterTitle"
+                      className="text-textFooterTitle px-5 py-3 font-semibold transition-colors cursor-pointer hover:bg-borderHeader"
                     >
                       {option}
                     </div>
@@ -119,7 +121,7 @@ const Stake = () => {
           </div>
           <div className="flex flex-col gap-4">
             <label htmlFor="period" className="text-textFooterTitle text-[18px]">Locked period</label>
-            <div className="relative w-full">
+            <div className="w-full relative">
               <input
                 id="period"
                 name="period"
@@ -127,19 +129,34 @@ const Stake = () => {
                 value={period}
                 className="w-full bg-textWhiteButton border border-borderHeader h-[48px] rounded-lg px-5 text-base font-semibold text-textHeader focus:outline-none"
               />
-              <span className="absolute text-base font-semibold text-white -translate-y-1/2 right-4 top-1/2">Days</span>
+              <span className="-translate-y-1/2 absolute right-4 top-1/2 text-base font-semibold text-white">Days</span>
             </div>
           </div>
           <button
             className="!bg-textFooterTitle border border-borderHeader text-textWhiteButton font-semibold text-base h-[48px] flex flex-col items-center justify-center hover:scale-105 transition-all duration-200 ease-in-out cursor-pointer rounded-lg"
             onClick={() => {
-              // deposite(amount)
+              setIsModalOpen(true);
+              setIsModalVisible(true);
+              setTimeout(() => {
+                setIsModalVisible(false);
+                setTimeout(() => {
+                  setIsModalOpen(false);
+                }, 300); // Allow time for fade out animation
+              }, 3000);
             }}
           >
             Stake
           </button>
         </div>
       </div>
+      {isModalOpen && (
+        <div className={`fixed bottom-10 right-10 transition-opacity duration-300 ease-in-out ${isModalVisible ? 'opacity-100' : 'opacity-0'
+          }`}>
+          <div className="bg-textFooterTitle px-10 py-4 rounded-lg">
+            Successful Stake!
+          </div>  
+        </div>
+      )}
     </div>
   )
 }
