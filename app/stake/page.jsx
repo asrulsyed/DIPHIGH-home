@@ -1,7 +1,7 @@
 'use client'
 import * as anchor from "@coral-xyz/anchor";
 import { useEffect, useState } from "react";
-import { FaChevronDown, FaRegCircle, FaRegCircleCheck, FaRegCircleXmark } from "react-icons/fa6"
+import { FaChevronDown, FaRegCircle, FaRegCircleCheck, FaRegCircleXmark, FaSpinner } from "react-icons/fa6"
 import { deposite_token, test_transaction } from "@/anchor/setup";
 import { MINT_ADDRESS } from "@/constant";
 import { useWeb3 } from "@/hook/useweb3";
@@ -29,6 +29,7 @@ const Stake = () => {
   const [period, setPeriod] = useState(60);
   const wallet = useAnchorWallet();
   const [isSuccess, setIsSuccess] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const deposite = async (amount, period, apy) => {
     if (wallet) {
       try {
@@ -146,7 +147,9 @@ const Stake = () => {
             className="!bg-textFooterTitle border border-borderHeader text-textWhiteButton font-semibold text-base h-[48px] flex flex-col items-center justify-center hover:scale-105 transition-all duration-200 ease-in-out cursor-pointer rounded-lg"
             disabled={error == '' ? false : true}
             onClick={async () => {
+              setIsLoading(true);
               await deposite(amount, period, apy)
+              setIsLoading(false)
               setIsModalOpen(true);
               setIsModalVisible(true);
               setTimeout(() => {
@@ -157,7 +160,7 @@ const Stake = () => {
               }, 3000);
             }}
           >
-            Stake
+            {isLoading ? <FaSpinner className="animate-spin" /> : 'Stake'}
           </button>
         </div>
       </div>

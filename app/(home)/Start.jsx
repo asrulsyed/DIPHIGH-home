@@ -18,7 +18,7 @@ const Start = () => {
         </div>
       </div>
       <button className="h-[46px] w-[260px] flex flex-col justify-center items-center bg-textButton text-base text-textWhiteButton rounded-lg cursor-pointer hover:scale-105 transition-all duration-200 ease-in-out">
-        Stake Your $$AI
+        Stake Your DIPHIGH
       </button>
     </div>
   )

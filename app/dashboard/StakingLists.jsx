@@ -65,32 +65,32 @@ const HistoryItemComponent = ({ staking, className, index, setIsModalOpen, setIs
   return (
     <tr className={`${className} h-[56px]`}>
       <th className="px-4 md:px-6">
-        <div className="flex items-center justify-center text-base font-normal text-white text-nowrap">
+        <div className="flex justify-center items-center text-base font-normal text-nowrap text-white">
           {staking.amount}
         </div>
       </th>
       <th className="px-4 md:px-6">
-        <div className="flex items-center justify-center text-base font-normal text-white text-nowrap">
+        <div className="flex justify-center items-center text-base font-normal text-nowrap text-white">
           {staking.startTime}
         </div>
       </th>
       <th className="px-4 md:px-6">
-        <div className="flex items-center justify-center text-base font-normal text-white text-nowrap">
+        <div className="flex justify-center items-center text-base font-normal text-nowrap text-white">
           {staking.endTime}
         </div>
       </th>
       <th className="px-4 md:px-6">
-        <div className="flex items-center justify-center text-base font-normal text-white text-nowrap">
+        <div className="flex justify-center items-center text-base font-normal text-nowrap text-white">
           {staking.apy}%
         </div>
       </th>
       <th className="px-4 md:px-6">
-        <div className="flex items-center justify-center text-base font-normal text-white text-nowrap">
+        <div className="flex justify-center items-center text-base font-normal text-nowrap text-white">
           {staking.status}
         </div>
       </th>
       <th className="px-4 md:px-6">
-        <div className="flex items-center justify-center gap-2 text-sm font-normal text-white">
+        <div className="flex justify-center items-center gap-2 text-sm font-normal text-white">
           <button
             disabled={staking.status === 'Locked'}
             className="w-[100px] h-[32px] hover:bg-textFooterTitle rounded-[4px] hover:text-black bg-black border border-textHeader text-textFootTitle transition-colors duration-150 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
@@ -166,8 +166,12 @@ const StakingLists = () => {
         console.error("eee", err);
       }
     }
-    if (publicKey)
+    if (publicKey) {
       _getHistory()
+    } else {
+      setGlobalHistory([]);
+      setStakingData([]);
+    }
   }, [publicKey])
 
 
@@ -179,32 +183,32 @@ const StakingLists = () => {
           <thead>
             <tr className="h-[84px] border-b-[0.5px] border-textHeader !px-8 md:!px-12">
               <th className="px-4 md:px-6">
-                <div className="flex items-center justify-center text-nowrap">
+                <div className="flex justify-center items-center text-nowrap">
                   Amount
                 </div>
               </th>
               <th className="px-4 md:px-6">
-                <div className="flex items-center justify-center text-nowrap">
+                <div className="flex justify-center items-center text-nowrap">
                   Start Date
                 </div>
               </th>
               <th className="px-4 md:px-6">
-                <div className="flex items-center justify-center text-nowrap">
+                <div className="flex justify-center items-center text-nowrap">
                   End Date
                 </div>
               </th>
               <th className="px-4 md:px-6">
-                <div className="flex items-center justify-center text-nowrap">
+                <div className="flex justify-center items-center text-nowrap">
                   APY
                 </div>
               </th>
               <th className="px-4 md:px-6 min-w-[180px]">
-                <div className="flex items-center justify-center text-nowrap">
+                <div className="flex justify-center items-center text-nowrap">
                   Staking Status
                 </div>
               </th>
               <th className="px-4 md:px-6 min-w-[240px]">
-                <div className="flex items-center justify-center">
+                <div className="flex justify-center items-center">
                   Actions
                 </div>
               </th>
@@ -245,8 +249,8 @@ const StakingLists = () => {
           }`}>
           <div className="bg-black w-[270px] h-[70px] flex items-center justify-between rounded-lg border border-[#777777]/30">
             <div className="w-[68px] h-[68px] bg-bgButton rounded-l-lg flex items-center justify-center">
-              {isSuccess ? <FaRegCircleCheck className="text-3xl text-textFooterTitle" />
-                : <FaRegCircleXmark className="text-3xl text-textFooterTitle" />}
+              {isSuccess ? <FaRegCircleCheck className="text-textFooterTitle text-3xl" />
+                : <FaRegCircleXmark className="text-textFooterTitle text-3xl" />}
             </div>
             <div className="flex-1 text-base font-semibold tracking-wide text-center text-white">
               {successText}
