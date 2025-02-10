@@ -1,7 +1,7 @@
 'use client'
 import * as anchor from "@coral-xyz/anchor";
 import { useEffect, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6"
+import { FaChevronDown, FaRegCircle, FaRegCircleCheck, FaRegCircleXmark } from "react-icons/fa6"
 import { deposite_token, test_transaction } from "@/anchor/setup";
 import { MINT_ADDRESS } from "@/constant";
 import { useWeb3 } from "@/hook/useweb3";
@@ -27,7 +27,8 @@ const Stake = () => {
   const [amount, setAmount] = useState(minValue);
   const [error, setError] = useState('');
   const [period, setPeriod] = useState(60);
-  const wallet = useAnchorWallet()
+  const wallet = useAnchorWallet();
+  const [isSuccess, setIsSuccess] = useState();
   const deposite = async (amount, period, apy) => {
     if (wallet) {
       try {
@@ -40,7 +41,9 @@ const Stake = () => {
         )
 
         console.log("Tx =>", tx)
+        setIsSuccess(true)
       } catch (err) {
+        setIsSuccess(false)
         console.log("transaction failed!")
       }
     } else {
@@ -152,18 +155,24 @@ const Stake = () => {
                   setIsModalOpen(false);
                 }, 300); // Allow time for fade out animation
               }, 3000);
-              }}
+            }}
           >
             Stake
           </button>
         </div>
       </div>
       {isModalOpen && (
-        <div className={`fixed bottom-10 right-10 transition-opacity duration-300 ease-in-out ${isModalVisible ? 'opacity-100' : 'opacity-0'
+        <div className={`fixed top-[140px] lg:right-[78px] sm:right-10 right-4 transition-opacity duration-300 ease-in-out ${isModalVisible ? 'opacity-100' : 'opacity-0'
           }`}>
-          <div className="bg-textFooterTitle px-10 py-4 rounded-lg">
-            Successful Stake!
-          </div>  
+          <div className="bg-black w-[270px] h-[70px] flex items-center justify-between rounded-lg border border-[#777777]/30">
+            <div className="w-[68px] h-[68px] bg-bgButton rounded-l-lg flex items-center justify-center">
+              {isSuccess ? <FaRegCircleCheck className="text-textFooterTitle text-3xl" />
+                : <FaRegCircleXmark className="text-textFooterTitle text-3xl" />}
+            </div>
+            <div className="flex-1 text-base font-semibold tracking-wide text-center text-white">
+              {isSuccess ? 'Staking succeeded!' : 'Staking failed!'}
+            </div>
+          </div>
         </div>
       )}
     </div>
