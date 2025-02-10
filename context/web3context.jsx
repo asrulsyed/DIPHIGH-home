@@ -24,12 +24,8 @@ export const Web3Provider = ({ children }) => {
     const [userConnection, setConnection] = useState()
     const [userWallet, setWallet] = useState()
     const [program, setProgram] = useState()
-    const [amount, setAmount] = useState(0)
-    const [startTime, setStartTime] = useState()
 
-    const [endTime, setEndTime] = useState()
-    const [period, setPeriod] = useState()
-    const [apy, setApy] = useState()
+    const [globalHistory, setGlobalHistory] = useState()
 
 
     const createProvider = (_wallet, _connection) => {
@@ -45,13 +41,16 @@ export const Web3Provider = ({ children }) => {
         userConnection: userConnection,
         userWallet: userWallet,
         program: program,
-
+        globalHistory: globalHistory,
+        setGlobalHistory: setGlobalHistory,
     }),
         [
             provider,
             connection,
             wallet,
-            program
+            program,
+            globalHistory,
+            setGlobalHistory,
         ])
 
     useEffect(() => {
@@ -70,6 +69,10 @@ export const Web3Provider = ({ children }) => {
         //     setEnv()
 
     }, [wallet, connection])
+
+    useEffect(() => {
+        console.log("global : ", globalHistory)
+    }, [globalHistory])
 
 
     return (
