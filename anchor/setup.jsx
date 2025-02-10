@@ -185,14 +185,7 @@ export const deposite_token = async (
             .accounts({
                 mintToken: MINT_ADDRESS,
                 userAta: userAta,
-                tokenVault: TOKEN_VAULT_ADDRESS,
                 tokenVaultAta: tokenVaultAta,
-                signer: wallet.publicKey,
-                userInfoMaker: userInfoPDA,
-                userHistory: userHistoryPDA,
-                tokenProgram: TOKEN_PROGRAM_ID,
-                systemProgram: SystemProgram.programId,
-
             }).instruction()
     )
 
@@ -200,7 +193,6 @@ export const deposite_token = async (
 
     return tx
 }
-
 
 export const getHistory = async (
     mintAddress,
@@ -229,3 +221,156 @@ export const convertToLocalTime = (timestamp) => {
     const localTimeString = date.toLocaleString();
     return localTimeString;
 }
+
+export const withdraw_token = async (
+    wallet,
+    MINT_ADDRESS,
+    index
+) => {
+    const transaction = createTransaction();
+    const provider = createProvider(wallet, connection)
+    const USER_ADDRESS = wallet.publicKey
+    const program = getProgramInstance(wallet, connection);
+
+    console.log("provider =>", provider)
+    console.log("wallet address =>", USER_ADDRESS.toBase58())
+
+    const [tokenVaultPda] = PublicKey.findProgramAddressSync(
+        [Buffer.from("token_vault")],
+        PROGRAMID,
+    );
+
+    const [userInfoPDA] = PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("user_info_maker"),
+            MINT_ADDRESS.toBuffer()
+        ],
+        PROGRAMID
+    )
+
+    const [userHistoryPDA] = PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("user_history"),
+            MINT_ADDRESS.toBuffer(),
+            wallet.publicKey.toBuffer()
+        ],
+        PROGRAMID
+    )
+
+    const TOKEN_VAULT_ADDRESS = tokenVaultPda
+    const userAta = getAssociatedTokenAddressSync(
+        MINT_ADDRESS,
+        USER_ADDRESS,
+        true,
+    );
+
+    const usererAtaInstruction =
+        createAssociatedTokenAccountIdempotentInstruction(
+            USER_ADDRESS,
+            userAta,
+            USER_ADDRESS,
+            MINT_ADDRESS,
+        );
+
+    transaction.add(usererAtaInstruction);
+
+    const tokenVaultAta = getAssociatedTokenAddressSync(
+        MINT_ADDRESS,
+        TOKEN_VAULT_ADDRESS,
+        true,
+    );
+
+    const tokenVaultAtaInstruction =
+        createAssociatedTokenAccountIdempotentInstruction(
+            USER_ADDRESS,
+            tokenVaultAta,
+            TOKEN_VAULT_ADDRESS,
+            MINT_ADDRESS,
+        );
+
+    transaction.add(tokenVaultAtaInstruction);
+
+    const mint = await provider.connection.getTokenSupply(MINT_ADDRESS);
+    const decimals = mint.value.decimals;
+
+    const claimSign = await program.methods
+        .withdrawToken(new anchor.BN(index))
+        .accounts({
+            userAta: userAta,
+            tokenVaultAta: tokenVaultAta,
+            mintToken: MINT_ADDRESS
+        })
+        .instruction()
+
+    transaction.add(claimSign);
+    const tx = await provider.sendAndConfirm(transaction)
+
+    return tx
+}
+
+export const redeposite_token = async (
+    wallet,
+    MINT_ADDRESS,
+    index
+) => {
+    const transaction = createTransaction();
+    const provider = createProvider(wallet, connection)
+    const USER_ADDRESS = wallet.publicKey
+    const program = getProgramInstance(wallet, connection);
+
+    console.log("provider =>", provider)
+    console.log("wallet address =>", USER_ADDRESS.toBase58())
+
+    const [tokenVaultPda] = PublicKey.findProgramAddressSync(
+        [Buffer.from("token_vault")],
+        PROGRAMID,
+    );
+
+    const TOKEN_VAULT_ADDRESS = tokenVaultPda
+    const userAta = getAssociatedTokenAddressSync(
+        MINT_ADDRESS,
+        USER_ADDRESS,
+        true,
+    );
+
+    const usererAtaInstruction =
+        createAssociatedTokenAccountIdempotentInstruction(
+            USER_ADDRESS,
+            userAta,
+            USER_ADDRESS,
+            MINT_ADDRESS,
+        );
+
+    transaction.add(usererAtaInstruction);
+
+    const tokenVaultAta = getAssociatedTokenAddressSync(
+        MINT_ADDRESS,
+        TOKEN_VAULT_ADDRESS,
+        true,
+    );
+
+    const tokenVaultAtaInstruction =
+        createAssociatedTokenAccountIdempotentInstruction(
+            USER_ADDRESS,
+            tokenVaultAta,
+            TOKEN_VAULT_ADDRESS,
+            MINT_ADDRESS,
+        );
+
+    transaction.add(tokenVaultAtaInstruction);
+
+    const claimSign = await program.methods
+        .redepositeToken(new anchor.BN(index))
+        .accounts({
+            userAta: userAta,
+            tokenVaultAta: tokenVaultAta,
+            mintToken: MINT_ADDRESS
+        })
+        .instruction()
+
+    transaction.add(claimSign);
+    const tx = await provider.sendAndConfirm(transaction)
+
+    return tx
+}
+
