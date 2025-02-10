@@ -14,9 +14,54 @@ import {
 } from "@/anchor/setup";
 import { MINT_ADDRESS } from "@/constant";
 import { useWeb3 } from "@/hook/useweb3";
+import { FaRegCircleCheck, FaRegCircleXmark } from "react-icons/fa6";
 
 
-const HistoryItemComponent = ({ staking, className }) => {
+const HistoryItemComponent = ({ staking, className, index, setIsModalOpen, setIsModalVisible, setIsSuccess, setSuccessText }) => {
+  const wallet = useAnchorWallet();
+
+  const withdraw = async (index) => {
+    try {
+      const tx = await withdraw_token(
+        wallet,
+        MINT_ADDRESS,
+        index
+      )
+      setIsSuccess(true);
+      setSuccessText('Withdrawal Succeeded!')
+      console.log("Tx =>", tx)
+    } catch (err) {
+      setIsSuccess(false);
+      setSuccessText('Withdrawal Failed!')
+      if (err.message.includes("TokenLocked")) {
+        console.log("TokenLocked")
+      } else {
+        console.log("transaction failed!")
+      }
+    }
+  }
+
+  const redeposite = async (index) => {
+    try {
+      const tx = await redeposite_token(
+        wallet,
+        MINT_ADDRESS,
+        index
+      )
+      setIsSuccess(true)
+      setSuccessText('Redeposite Succeeded!')
+      console.log("tx =>", tx)
+    } catch (err) {
+      setIsSuccess(false)
+      setSuccessText('Redeposite Failed!')
+      if (err.message.includes("TokenLocked")) {
+        console.log("TokenLocked")
+      } else {
+        console.log("transaction failed!")
+      }
+    }
+  }
+
   return (
     <tr className={`${className} h-[56px]`}>
       <th className="px-4 md:px-6">
@@ -48,12 +93,36 @@ const HistoryItemComponent = ({ staking, className }) => {
         <div className="flex items-center justify-center gap-2 text-sm font-normal text-white">
           <button
             disabled={staking.status === 'Locked'}
-            className="w-[100px] h-[32px] hover:bg-textFooterTitle rounded-[4px] hover:text-black bg-black border border-textHeader text-textFootTitle transition-colors duration-150 ease-linear disabled:opacity-50 disabled:cursor-not-allowed">
+            className="w-[100px] h-[32px] hover:bg-textFooterTitle rounded-[4px] hover:text-black bg-black border border-textHeader text-textFootTitle transition-colors duration-150 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={async () => {
+              await withdraw(index)
+              setIsModalOpen(true);
+              setIsModalVisible(true);
+              setTimeout(() => {
+                setIsModalVisible(false);
+                setTimeout(() => {
+                  setIsModalOpen(false);
+                }, 300); // Allow time for fade out animation
+              }, 3000);
+            }}
+          >
             Withdraw
           </button>
           <button
             disabled={staking.status === 'Locked'}
-            className="w-[100px] h-[32px] hover:bg-textFooterTitle rounded-[4px] hover:text-black bg-black border border-textHeader text-textFootTitle transition-colors duration-150 ease-linear disabled:opacity-50 disabled:cursor-not-allowed">
+            className="w-[100px] h-[32px] hover:bg-textFooterTitle rounded-[4px] hover:text-black bg-black border border-textHeader text-textFootTitle transition-colors duration-150 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={async () => {
+              await redeposite(index)
+              setIsModalOpen(true);
+              setIsModalVisible(true);
+              setTimeout(() => {
+                setIsModalVisible(false);
+                setTimeout(() => {
+                  setIsModalOpen(false);
+                }, 300); // Allow time for fade out animation
+              }, 3000);
+            }}
+          >
             Claim
           </button>
         </div>
@@ -67,6 +136,11 @@ const StakingLists = () => {
   const { setGlobalHistory } = useWeb3();
   const { publicKey } = useWallet();
   const [isLoading, setIsLoading] = useState(true)
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isSuccess, setIsSuccess] = useState();
+  const [successText, setSuccessText] = useState("");
 
   useEffect(() => {
     const _getHistory = async () => {
@@ -154,6 +228,11 @@ const StakingLists = () => {
                   <HistoryItemComponent
                     key={idx}
                     staking={staking}
+                    index={idx}
+                    setIsModalOpen={setIsModalOpen}
+                    setIsModalVisible={setIsModalVisible}
+                    setIsSuccess={setIsSuccess}
+                    setSuccessText={setSuccessText}
                     className={idx % 2 === 0 ? "bg-bgHeader" : "bg-transparent"}
                   />
                 ))
@@ -161,6 +240,20 @@ const StakingLists = () => {
           </tbody>
         </table>
       </div>
+      {isModalOpen && (
+        <div className={`fixed top-[140px] lg:right-[78px] sm:right-10 right-4 transition-opacity duration-300 ease-in-out ${isModalVisible ? 'opacity-100' : 'opacity-0'
+          }`}>
+          <div className="bg-black w-[270px] h-[70px] flex items-center justify-between rounded-lg border border-[#777777]/30">
+            <div className="w-[68px] h-[68px] bg-bgButton rounded-l-lg flex items-center justify-center">
+              {isSuccess ? <FaRegCircleCheck className="text-3xl text-textFooterTitle" />
+                : <FaRegCircleXmark className="text-3xl text-textFooterTitle" />}
+            </div>
+            <div className="flex-1 text-base font-semibold tracking-wide text-center text-white">
+              {successText}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
