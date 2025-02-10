@@ -74,10 +74,10 @@ const getTokenVaultPda = () => {
     return tokenVaultPda
 }
 
-export const convertToBN = async (array, decimals) => {
+export const convertToBN = async (array) => {
     let result = array
     for (let i = 0; i < array.length; i++) {
-        result[i] = result[i].toNumber() / (10 ** decimals)
+        result[i] = result[i].toNumber() / (10 ** 9)
     }
     return result
 }
@@ -104,6 +104,8 @@ export const deposite_token = async (
     wallet,
     MINT_ADDRESS,
     amount,
+    period,
+    apy
 ) => {
     const transaction = createTransaction();
     const provider = createProvider(wallet, connection)
@@ -170,11 +172,16 @@ export const deposite_token = async (
 
     const mint = await provider.connection.getTokenSupply(MINT_ADDRESS);
     const decimals = mint.value.decimals;
-    let send_amount = amount * 10 ** decimals;
+    let user_amount = new anchor.BN(amount * 10 ** decimals);
+    let user_period = new anchor.BN(period)
+    let user_apy = new anchor.BN(apy)
 
     transaction.add(
         await program.methods
-            .depositeToken(new anchor.BN(send_amount))
+            .depositeToken(
+                user_amount,
+                user_period,
+                user_apy)
             .accounts({
                 mintToken: MINT_ADDRESS,
                 userAta: userAta,
@@ -212,6 +219,8 @@ export const getHistory = async (
     const userHistoryData = await program.account.userHistory.fetch(
         userHistoryPDA
     )
+
+
     return userHistoryData
 }
 

@@ -58,7 +58,7 @@ export const Web3Provider = ({ children }) => {
             await setWallet(_userWallet)
         }
         // if (wallet)
-            // setEnv()
+        //     setEnv()
     }, [wallet, connection])
 
 

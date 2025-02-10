@@ -7,11 +7,14 @@ import { getHistory, convertToBN, convertFromHextToInt, getDecimal, convertToLoc
 import { MINT_ADDRESS } from "@/constant";
 
 
-const HistoryItemComponent = ({ amount, startTime, endTime, className }) => {
+const HistoryItemComponent = ({ amount, startTime, apy, className }) => {
   const isOver60Days = moment().isAfter(
     moment(new Date(convertToLocalTime(startTime))).add(60, 'days')
   );
 
+  useEffect(() => {
+    console.log(new Date(convertToLocalTime(startTime)))
+  }, [])
   return (
     <tr className={`${className} h-[56px]`}>
       <th className="px-4 md:px-6">
@@ -31,7 +34,7 @@ const HistoryItemComponent = ({ amount, startTime, endTime, className }) => {
       </th>
       <th className="px-4 md:px-6">
         <div className="flex items-center justify-center text-base font-normal text-white text-nowrap">
-          %
+          {apy}%
         </div>
       </th>
       <th className="px-4 md:px-6">
@@ -61,24 +64,28 @@ const StakingLists = () => {
   const [amount, setAmount] = useState([])
   const [startTime, setStartTime] = useState([])
   const [endTime, setEndTime] = useState([])
+  const [period, setPeriod] = useState([])
+  const [apy, setApy] = useState([])
   const { publicKey } = useWallet();
   useEffect(() => {
     const _getHistory = async () => {
       try {
-        const _stakingHistory = await getHistory(MINT_ADDRESS, publicKey)
-        const decimals = await getDecimal(MINT_ADDRESS)
-        const amount = await convertToBN(_stakingHistory.stakingAmount, decimals)
-        const startTime = await convertFromHextToInt(_stakingHistory.stakingStart)
-        const endTime = await convertFromHextToInt(_stakingHistory.stakingEnd)
-        setAmount(amount)
-        setStartTime(startTime)
-        setEndTime(endTime)
+        const userHistoryData = await getHistory(MINT_ADDRESS, publicKey)
+        const _amount = await convertToBN(userHistoryData.stakingAmount)
+        const _startTime = await convertFromHextToInt(userHistoryData.stakingStart)
+        const _period = await convertFromHextToInt(userHistoryData.stakingPeriod)
+        const _apy = await convertFromHextToInt(userHistoryData.stakingApy)
+        setAmount(_amount)
+        setStartTime(_startTime)
+        setPeriod(_period)
+        setApy(_apy)
       } catch (err) {
       }
     }
     if (publicKey)
       _getHistory()
   }, [publicKey])
+
 
   return (
     <div className="flex flex-col gap-5">
@@ -132,7 +139,7 @@ const StakingLists = () => {
                   key={idx}
                   amount={amount[idx]}
                   startTime={startTime[idx]}
-                  endTime={endTime[idx]}
+                  apy={apy[idx]}
                   className={idx % 2 === 0 ? "bg-bgHeader" : "bg-transparent"}
                 />
               ))
