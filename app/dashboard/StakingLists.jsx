@@ -84,26 +84,24 @@ const HistoryItemComponent = ({ amount, startTime, apy, className, index }) => {
       </th>
       <th className="px-4 md:px-6">
         <div className="flex items-center justify-center gap-2 text-sm font-normal text-white">
-          {isOver60Days && (
-            <>
-              <button
-                className="w-[100px] h-[32px] hover:bg-textFooterTitle rounded-[4px] hover:text-black bg-black border border-textHeader text-textFootTitle transition-colors duration-150 ease-linear"
-                onClick={async () => {
-                  withdraw(index)
-                }}
-              >
-                Withdraw
-              </button>
-              <button
-                className="w-[100px] h-[32px] hover:bg-textFooterTitle rounded-[4px] hover:text-black bg-black border border-textHeader text-textFootTitle transition-colors duration-150 ease-linear"
-                onClick={async () => {
-                  redeposite(index)
-                }}
-              >
-                Claim
-              </button>
-            </>
-          )}
+          <button
+            className={`w-[100px] h-[32px] ${isOver60Days ? "hover:bg-textFooterTitle" : ""} rounded-[4px] ${isOver60Days ? "hover:text-black" : ""} bg-black border border-textHeader text-textFootTitle transition-colors duration-150 ease-linear`}
+            disabled={isOver60Days ? false : true}
+            onClick={async () => {
+              withdraw(index)
+            }}
+          >
+            Withdraw
+          </button>
+          <button
+            className={`w-[100px] h-[32px] ${isOver60Days ? "hover:bg-textFooterTitle" : ""} rounded-[4px] ${isOver60Days ? "hover:text-black" : ""} bg-black border border-textHeader text-textFootTitle transition-colors duration-150 ease-linear`}
+            disabled={isOver60Days ? false : true}
+            onClick={async () => {
+              redeposite(index)
+            }}
+          >
+            Claim
+          </button>
         </div>
       </th>
     </tr>
