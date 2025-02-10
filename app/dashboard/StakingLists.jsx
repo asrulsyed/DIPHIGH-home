@@ -1,16 +1,59 @@
 'use client'
 
-import { useWallet } from "@solana/wallet-adapter-react"
+import { useWallet, useAnchorWallet } from "@solana/wallet-adapter-react"
 import moment from "moment";
 import { useEffect, useState } from "react"
-import { getHistory, convertToBN, convertFromHextToInt, getDecimal, convertToLocalTime } from "@/anchor/setup";
+import {
+  getHistory,
+  convertToBN,
+  convertFromHextToInt,
+  getDecimal,
+  convertToLocalTime,
+  withdraw_token,
+  redeposite_token
+} from "@/anchor/setup";
 import { MINT_ADDRESS } from "@/constant";
 
 
-const HistoryItemComponent = ({ amount, startTime, endTime, className }) => {
+const HistoryItemComponent = ({ amount, startTime, apy, className, index }) => {
+  const wallet = useAnchorWallet()
   const isOver60Days = moment().isAfter(
     moment(new Date(convertToLocalTime(startTime))).add(60, 'days')
   );
+
+  useEffect(() => {
+    console.log(new Date(convertToLocalTime(startTime)))
+  }, [])
+
+  const withdraw = async (index) => {
+    try {
+      const tx = await withdraw_token(
+        wallet,
+        MINT_ADDRESS,
+        index
+      )
+      console.log("tx => ", tx)
+    }
+    catch (err) {
+      console.log("err =>", err)
+    }
+  }
+
+  const redeposite = async (index) => {
+    console.log("index =>", index)
+    try {
+      const tx = await redeposite_token(
+        wallet,
+        MINT_ADDRESS,
+        index
+      )
+      console.log("tx => ", tx)
+    }
+    catch (err) {
+      console.log("err =>", err)
+    }
+  }
+
 
   return (
     <tr className={`${className} h-[56px]`}>
@@ -30,8 +73,8 @@ const HistoryItemComponent = ({ amount, startTime, endTime, className }) => {
         </div>
       </th>
       <th className="px-4 md:px-6">
-        <div className="flex justify-center items-center text-base font-normal text-nowrap text-white">
-          %
+        <div className="flex items-center justify-center text-base font-normal text-white text-nowrap">
+          {apy}%
         </div>
       </th>
       <th className="px-4 md:px-6">
@@ -40,17 +83,25 @@ const HistoryItemComponent = ({ amount, startTime, endTime, className }) => {
         </div>
       </th>
       <th className="px-4 md:px-6">
-        <div className="flex justify-center items-center gap-2 text-sm font-normal text-white">
-          {isOver60Days && (
-            <>
-              <button className="w-[100px] h-[32px] hover:bg-textFooterTitle rounded-[4px] hover:text-black bg-black border border-textHeader text-textFootTitle transition-colors duration-150 ease-linear">
-                Withdraw
-              </button>
-              <button className="w-[100px] h-[32px] hover:bg-textFooterTitle rounded-[4px] hover:text-black bg-black border border-textHeader text-textFootTitle transition-colors duration-150 ease-linear">
-                Claim
-              </button>
-            </>
-          )}
+        <div className="flex items-center justify-center gap-2 text-sm font-normal text-white">
+          <button
+            className={`w-[100px] h-[32px] ${isOver60Days ? "hover:bg-textFooterTitle" : ""} rounded-[4px] ${isOver60Days ? "hover:text-black" : ""} bg-black border border-textHeader text-textFootTitle transition-colors duration-150 ease-linear`}
+            disabled={isOver60Days ? false : true}
+            onClick={async () => {
+              withdraw(index)
+            }}
+          >
+            Withdraw
+          </button>
+          <button
+            className={`w-[100px] h-[32px] ${isOver60Days ? "hover:bg-textFooterTitle" : ""} rounded-[4px] ${isOver60Days ? "hover:text-black" : ""} bg-black border border-textHeader text-textFootTitle transition-colors duration-150 ease-linear`}
+            disabled={isOver60Days ? false : true}
+            onClick={async () => {
+              redeposite(index)
+            }}
+          >
+            Claim
+          </button>
         </div>
       </th>
     </tr>
@@ -60,26 +111,33 @@ const HistoryItemComponent = ({ amount, startTime, endTime, className }) => {
 const StakingLists = () => {
   const [amount, setAmount] = useState([])
   const [startTime, setStartTime] = useState([])
-  const [endTime, setEndTime] = useState([])
+  const [period, setPeriod] = useState([])
+  const [apy, setApy] = useState([])
   const { publicKey } = useWallet();
-  
+  const [isloading, setIsLoading] = useState(true)
+
+
   useEffect(() => {
     const _getHistory = async () => {
       try {
-        const _stakingHistory = await getHistory(MINT_ADDRESS, publicKey)
-        const decimals = await getDecimal(MINT_ADDRESS)
-        const amount = await convertToBN(_stakingHistory.stakingAmount, decimals)
-        const startTime = await convertFromHextToInt(_stakingHistory.stakingStart)
-        const endTime = await convertFromHextToInt(_stakingHistory.stakingEnd)
-        setAmount(amount)
-        setStartTime(startTime)
-        setEndTime(endTime)
+        await setIsLoading(true)
+        const userHistoryData = await getHistory(MINT_ADDRESS, publicKey)
+        const _amount = await convertToBN(userHistoryData.stakingAmount)
+        const _startTime = await convertFromHextToInt(userHistoryData.stakingStart)
+        const _period = await convertFromHextToInt(userHistoryData.stakingPeriod)
+        const _apy = await convertFromHextToInt(userHistoryData.stakingApy)
+        setAmount(_amount)
+        setStartTime(_startTime)
+        setPeriod(_period)
+        setApy(_apy)
+        await setIsLoading(false)
       } catch (err) {
       }
     }
     if (publicKey)
       _getHistory()
   }, [publicKey])
+
 
   return (
     <div className="flex flex-col gap-5">
@@ -121,22 +179,29 @@ const StakingLists = () => {
             </tr>
           </thead>
           <tbody>
-            {amount.length == 0 ?
+            {isloading ?
               <tr>
                 <td colSpan={6} className="py-5 text-center">
-                  <p>No active staking positions</p>
+                  <p>{"Loading ..."}</p>
                 </td>
-              </tr>
-              :
-              amount.map((itm, idx) => (
-                <HistoryItemComponent
-                  key={idx}
-                  amount={amount[idx]}
-                  startTime={startTime[idx]}
-                  endTime={endTime[idx]}
-                  className={idx % 2 === 0 ? "bg-bgHeader" : "bg-transparent"}
-                />
-              ))
+              </tr> :
+              amount.length == 0 ?
+                <tr>
+                  <td colSpan={6} className="py-5 text-center">
+                    <p>No active staking positions</p>
+                  </td>
+                </tr>
+                :
+                amount.map((itm, idx) => (
+                  <HistoryItemComponent
+                    key={idx}
+                    amount={amount[idx]}
+                    startTime={startTime[idx]}
+                    apy={apy[idx]}
+                    index={idx}
+                    className={idx % 2 === 0 ? "bg-bgHeader" : "bg-transparent"}
+                  />
+                ))
             }
           </tbody>
         </table>

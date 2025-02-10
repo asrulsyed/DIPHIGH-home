@@ -74,10 +74,10 @@ const getTokenVaultPda = () => {
     return tokenVaultPda
 }
 
-export const convertToBN = async (array, decimals) => {
+export const convertToBN = async (array) => {
     let result = array
     for (let i = 0; i < array.length; i++) {
-        result[i] = result[i].toNumber() / (10 ** decimals)
+        result[i] = result[i].toNumber() / (10 ** 9)
     }
     return result
 }
@@ -104,6 +104,8 @@ export const deposite_token = async (
     wallet,
     MINT_ADDRESS,
     amount,
+    period,
+    apy
 ) => {
     const transaction = createTransaction();
     const provider = createProvider(wallet, connection)
@@ -170,22 +172,20 @@ export const deposite_token = async (
 
     const mint = await provider.connection.getTokenSupply(MINT_ADDRESS);
     const decimals = mint.value.decimals;
-    let send_amount = amount * 10 ** decimals;
+    let user_amount = new anchor.BN(amount * 10 ** decimals);
+    let user_period = new anchor.BN(period)
+    let user_apy = new anchor.BN(apy)
 
     transaction.add(
         await program.methods
-            .depositeToken(new anchor.BN(send_amount))
+            .depositeToken(
+                user_amount,
+                user_period,
+                user_apy)
             .accounts({
                 mintToken: MINT_ADDRESS,
                 userAta: userAta,
-                tokenVault: TOKEN_VAULT_ADDRESS,
                 tokenVaultAta: tokenVaultAta,
-                signer: wallet.publicKey,
-                userInfoMaker: userInfoPDA,
-                userHistory: userHistoryPDA,
-                tokenProgram: TOKEN_PROGRAM_ID,
-                systemProgram: SystemProgram.programId,
-
             }).instruction()
     )
 
@@ -193,7 +193,6 @@ export const deposite_token = async (
 
     return tx
 }
-
 
 export const getHistory = async (
     mintAddress,
@@ -212,6 +211,8 @@ export const getHistory = async (
     const userHistoryData = await program.account.userHistory.fetch(
         userHistoryPDA
     )
+
+
     return userHistoryData
 }
 
@@ -220,3 +221,156 @@ export const convertToLocalTime = (timestamp) => {
     const localTimeString = date.toLocaleString();
     return localTimeString;
 }
+
+export const withdraw_token = async (
+    wallet,
+    MINT_ADDRESS,
+    index
+) => {
+    const transaction = createTransaction();
+    const provider = createProvider(wallet, connection)
+    const USER_ADDRESS = wallet.publicKey
+    const program = getProgramInstance(wallet, connection);
+
+    console.log("provider =>", provider)
+    console.log("wallet address =>", USER_ADDRESS.toBase58())
+
+    const [tokenVaultPda] = PublicKey.findProgramAddressSync(
+        [Buffer.from("token_vault")],
+        PROGRAMID,
+    );
+
+    const [userInfoPDA] = PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("user_info_maker"),
+            MINT_ADDRESS.toBuffer()
+        ],
+        PROGRAMID
+    )
+
+    const [userHistoryPDA] = PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("user_history"),
+            MINT_ADDRESS.toBuffer(),
+            wallet.publicKey.toBuffer()
+        ],
+        PROGRAMID
+    )
+
+    const TOKEN_VAULT_ADDRESS = tokenVaultPda
+    const userAta = getAssociatedTokenAddressSync(
+        MINT_ADDRESS,
+        USER_ADDRESS,
+        true,
+    );
+
+    const usererAtaInstruction =
+        createAssociatedTokenAccountIdempotentInstruction(
+            USER_ADDRESS,
+            userAta,
+            USER_ADDRESS,
+            MINT_ADDRESS,
+        );
+
+    transaction.add(usererAtaInstruction);
+
+    const tokenVaultAta = getAssociatedTokenAddressSync(
+        MINT_ADDRESS,
+        TOKEN_VAULT_ADDRESS,
+        true,
+    );
+
+    const tokenVaultAtaInstruction =
+        createAssociatedTokenAccountIdempotentInstruction(
+            USER_ADDRESS,
+            tokenVaultAta,
+            TOKEN_VAULT_ADDRESS,
+            MINT_ADDRESS,
+        );
+
+    transaction.add(tokenVaultAtaInstruction);
+
+    const mint = await provider.connection.getTokenSupply(MINT_ADDRESS);
+    const decimals = mint.value.decimals;
+
+    const claimSign = await program.methods
+        .withdrawToken(new anchor.BN(index))
+        .accounts({
+            userAta: userAta,
+            tokenVaultAta: tokenVaultAta,
+            mintToken: MINT_ADDRESS
+        })
+        .instruction()
+
+    transaction.add(claimSign);
+    const tx = await provider.sendAndConfirm(transaction)
+
+    return tx
+}
+
+export const redeposite_token = async (
+    wallet,
+    MINT_ADDRESS,
+    index
+) => {
+    const transaction = createTransaction();
+    const provider = createProvider(wallet, connection)
+    const USER_ADDRESS = wallet.publicKey
+    const program = getProgramInstance(wallet, connection);
+
+    console.log("provider =>", provider)
+    console.log("wallet address =>", USER_ADDRESS.toBase58())
+
+    const [tokenVaultPda] = PublicKey.findProgramAddressSync(
+        [Buffer.from("token_vault")],
+        PROGRAMID,
+    );
+
+    const TOKEN_VAULT_ADDRESS = tokenVaultPda
+    const userAta = getAssociatedTokenAddressSync(
+        MINT_ADDRESS,
+        USER_ADDRESS,
+        true,
+    );
+
+    const usererAtaInstruction =
+        createAssociatedTokenAccountIdempotentInstruction(
+            USER_ADDRESS,
+            userAta,
+            USER_ADDRESS,
+            MINT_ADDRESS,
+        );
+
+    transaction.add(usererAtaInstruction);
+
+    const tokenVaultAta = getAssociatedTokenAddressSync(
+        MINT_ADDRESS,
+        TOKEN_VAULT_ADDRESS,
+        true,
+    );
+
+    const tokenVaultAtaInstruction =
+        createAssociatedTokenAccountIdempotentInstruction(
+            USER_ADDRESS,
+            tokenVaultAta,
+            TOKEN_VAULT_ADDRESS,
+            MINT_ADDRESS,
+        );
+
+    transaction.add(tokenVaultAtaInstruction);
+
+    const claimSign = await program.methods
+        .redepositeToken(new anchor.BN(index))
+        .accounts({
+            userAta: userAta,
+            tokenVaultAta: tokenVaultAta,
+            mintToken: MINT_ADDRESS
+        })
+        .instruction()
+
+    transaction.add(claimSign);
+    const tx = await provider.sendAndConfirm(transaction)
+
+    return tx
+}
+

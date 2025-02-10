@@ -250,11 +250,19 @@
         {
           "name": "amount",
           "type": "u64"
+        },
+        {
+          "name": "period",
+          "type": "u64"
+        },
+        {
+          "name": "apy",
+          "type": "u64"
         }
       ]
     },
     {
-      "name": "claimRewardToken",
+      "name": "redepositeToken",
       "accounts": [
         {
           "name": "mintToken",
@@ -351,7 +359,12 @@
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "index",
+          "type": "u64"
+        }
+      ]
     },
     {
       "name": "withdrawToken",
@@ -598,6 +611,24 @@
             }
           },
           {
+            "name": "stakingPeriod",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "stakingApy",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "claimDate",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
             "name": "bump",
             "type": "u8"
           }
@@ -613,8 +644,8 @@
     },
     {
       "code": 6001,
-      "name": "ActiveVestingExists",
-      "msg": "Active vesting period exists"
+      "name": "NotDaily",
+      "msg": "Rewards can only be received once per day."
     },
     {
       "code": 6002,
@@ -631,5 +662,8 @@
       "name": "SaleNotEnded",
       "msg": "Sale not ended"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "9eAYUGAy3JVdDXsqScRAa1ejeDpNjXTQyJ5ALkcdky6h"
+  }
 }

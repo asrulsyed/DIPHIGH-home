@@ -1,6 +1,6 @@
 'use client'
 import * as anchor from "@coral-xyz/anchor";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa6"
 import { deposite_token, test_transaction } from "@/anchor/setup";
 import { MINT_ADDRESS } from "@/constant";
@@ -19,22 +19,24 @@ import { getDecimal } from "@/anchor/setup";
 import { program } from "../../anchor/setup";
 
 const Stake = () => {
+  const minValue = 50
   const [isOpen, setIsOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState('DIPHIGH');
-  const [selectedPackage, setSelectedPackage] = useState(10);
+  const [apy, setApy] = useState(10);
   const packages = [10, 20, 30];
-  const [amount, setAmount] = useState(5000);
+  const [amount, setAmount] = useState(minValue);
   const [error, setError] = useState('');
   const [period, setPeriod] = useState(60);
   const wallet = useAnchorWallet()
-  const { connection } = useConnection();
-  const deposite = async (amount) => {
+  const deposite = async (amount, period, apy) => {
     if (wallet) {
       try {
         const tx = await deposite_token(
           wallet,
           MINT_ADDRESS,
-          amount
+          amount,
+          period,
+          apy
         )
 
         console.log("Tx =>", tx)
@@ -47,6 +49,11 @@ const Stake = () => {
   }
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  useEffect(() => {
+    console.log("amount =>", amount)
+    console.log("apy =>", apy)
+  }, [amount, apy])
 
   return (
     <div className="w-full min-h-screen overflow-y-auto flex justify-center">
@@ -88,8 +95,8 @@ const Stake = () => {
               {packages.map((p) => (
                 <button
                   key={p}
-                  onClick={() => setSelectedPackage(p)}
-                  className={`${p === selectedPackage ? 'bg-textFooterTitle text-textWhiteButton border-borderHeader' : 'bg-transparent text-textFooterTitle border-borderHeader'} border hover:bg-textFooterTitle hover:text-textWhiteButton hover:border-borderHeader font-semibold text-base h-[48px] w-[100px] flex items-center justify-center transition-all duration-200 ease-in-out cursor-pointer rounded-lg`}
+                  onClick={() => setApy(p)}
+                  className={`${p === apy ? 'bg-textFooterTitle text-textWhiteButton border-borderHeader' : 'bg-transparent text-textFooterTitle border-borderHeader'} border hover:bg-textFooterTitle hover:text-textWhiteButton hover:border-borderHeader font-semibold text-base h-[48px] w-[100px] flex items-center justify-center transition-all duration-200 ease-in-out cursor-pointer rounded-lg`}
                 >
                   {p}% APY
                 </button>
@@ -103,10 +110,10 @@ const Stake = () => {
               name="amount"
               type="number"
               value={amount}
-              min="5000"
+              min={minValue}
               onChange={(e) => {
                 const value = Number(e.target.value);
-                if (value < 5000) {
+                if (value < minValue) {
                   setError('Amount must be at least 5000');
                 } else {
                   setError('');
@@ -134,7 +141,9 @@ const Stake = () => {
           </div>
           <button
             className="!bg-textFooterTitle border border-borderHeader text-textWhiteButton font-semibold text-base h-[48px] flex flex-col items-center justify-center hover:scale-105 transition-all duration-200 ease-in-out cursor-pointer rounded-lg"
-            onClick={() => {
+            disabled={error == '' ? false : true}
+            onClick={async () => {
+              await deposite(amount, period, apy)
               setIsModalOpen(true);
               setIsModalVisible(true);
               setTimeout(() => {
@@ -143,7 +152,7 @@ const Stake = () => {
                   setIsModalOpen(false);
                 }, 300); // Allow time for fade out animation
               }, 3000);
-            }}
+              }}
           >
             Stake
           </button>
