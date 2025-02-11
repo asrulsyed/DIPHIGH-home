@@ -158,7 +158,7 @@ const StakingLists = () => {
           endTime: moment(new Date(convertToLocalTime(startTime[index]))).add(period[index], "days").format('YYYY/MM/DD'),
           apy: apy[index],
           status: moment().isAfter(moment(new Date(convertToLocalTime(startTime[index]))).add(period[index], 'days')) ? 'Unlocked' : 'Locked'
-        }))
+        })).reverse()
         setStakingData(stakingData)
         setGlobalHistory(stakingData)
         setIsLoading(false)
