@@ -28,10 +28,6 @@ export const createProvider = (wallet, connection) => {
     return provider;
 }
 
-// export const program = new Program(IDL, programId, {
-//     connection,
-// });
-
 export const getProgramInstance = (wallet, connection) => {
     const provider = createProvider(wallet, connection);
     return new Program(IDL, PROGRAMID, provider);
