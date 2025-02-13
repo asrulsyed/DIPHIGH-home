@@ -22,7 +22,7 @@ const CustomTooltip = ({ days, active, payload, label }) => {
 }
 const StakingOverview = () => {
   const { globalHistory } = useWeb3();
-  
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('DIPHIGH');
 
@@ -32,27 +32,58 @@ const StakingOverview = () => {
   const [lockedTotal, setLockedTotal] = useState(0);
   const [unlockedTotal, setUnlockedTotal] = useState(0);
 
-  const [expectedRewards, setExpectedRewards] = useState(0);
-  const [withdrawalRewards, setWithdrawalRewards] = useState(0);
+  const [expectedRewards, setExpectedRewards] = useState([]);
+  const [withdrawalRewards, setWithdrawalRewards] = useState([]);
+
+  const [expectedTotal, setExpectedTotal] = useState(0);
+  const [withdrawalTotal, setWithdrawalTotal] = useState(0);
 
   useEffect(() => {
     if (!globalHistory || !Array.isArray(globalHistory)) return;
-    const lockedStakes = globalHistory.filter(staking => staking.status === 'Locked');
-    const unlockedStakes = globalHistory.filter(staking => staking.status === 'Unlocked');
-  
-    const lockedTotal = lockedStakes.reduce((sum, staking) => sum + staking.amount, 0);
-    const unlockedTotal = unlockedStakes.reduce((sum, staking) => sum + staking.amount, 0);
-    
-    const expectedRewards = lockedStakes.reduce((sum, staking) => sum + staking.amount * staking.apy / 100, 0);
-    const withdrawalRewards = unlockedStakes.reduce((sum, staking) => sum + staking.amount * staking.apy / 100, 0);
-    
+    const lockedStakes = globalHistory
+      .filter(staking => staking.status === 'Locked')
+      .map((staking, index, array) => ({
+        ...staking,
+        amount: array.slice(0, index + 1).reduce((sum, item) => sum + item.amount, 0)
+      }));
+    const unlockedStakes = globalHistory
+      .filter(staking => staking.status === 'Unlocked')
+      .map((staking, index, array) => ({
+        ...staking,
+        amount: array.slice(0, index + 1).reduce((sum, item) => sum + item.amount, 0)
+      }));
+
+    const lockedStakesLength = lockedStakes.length;
+    const unlockedStakesLenght = unlockedStakes.length;
+
+    const lockedTotal = lockedStakes[lockedStakesLength - 1]?.amount || 0;
+    const unlockedTotal = unlockedStakes[unlockedStakesLenght - 1]?.amount || 0;
+
+    const expectedRewards = globalHistory
+      .filter(staking => staking.status === 'Locked')
+      .map((staking, index, array) => ({
+        ...staking,
+        amount: array.slice(0, index + 1).reduce((sum, item) => sum + item.amount * item.apy / 100, 0)
+      }))
+
+    const withdrawalRewards = globalHistory
+    .filter(staking => staking.status === 'Unlocked')
+    .map((staking, index, array) => ({
+        ...staking,
+        amount: array.slice(0, index + 1).reduce((sum, item) => sum + item.amount * item.apy / 100, 0)
+      }))
+
+    const expectedTotal = expectedRewards[expectedRewards.length - 1]?.amount || 0;
+    const withdrawalTotal = withdrawalRewards[withdrawalRewards.length - 1]?.amount || 0;
+
     setLockedStakes(lockedStakes);
     setUnlockedStakes(unlockedStakes);
     setLockedTotal(lockedTotal);
     setUnlockedTotal(unlockedTotal);
     setExpectedRewards(expectedRewards);
     setWithdrawalRewards(withdrawalRewards);
-    console.log("lockedStakes", lockedStakes)
+    setExpectedTotal(expectedTotal);
+    setWithdrawalTotal(withdrawalTotal);
   }, [globalHistory])
 
   return (
@@ -127,9 +158,9 @@ const StakingOverview = () => {
           <div className="flex justify-between items-center">
             <p className="text-sm font-medium leading-6 text-white">Expected Rewards</p>
           </div>
-          <p className="text-textGraph font-bold text-[32px] leading-6">{expectedRewards}</p>
+          <p className="text-textGraph font-bold text-[32px] leading-6">{expectedTotal}</p>
           <ResponsiveContainer width="100%" height={50}>
-            <AreaChart width={500} height={300} data={lockedStakes}>
+            <AreaChart width={500} height={300} data={expectedRewards}>
               <defs>
                 <linearGradient id="colorImpression" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#777777" stopOpacity={0.15} />
@@ -137,7 +168,7 @@ const StakingOverview = () => {
                 </linearGradient>
               </defs>
               <Tooltip content={<CustomTooltip days={payload => payload[0]?.payload?.endTime} />} />
-              <Area dataKey={(data) => data.amount * data.apy / 100} stroke="#ffffff" fill="url(#colorImpression)" />
+              <Area dataKey="amount" stroke="#ffffff" fill="url(#colorImpression)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -145,9 +176,9 @@ const StakingOverview = () => {
           <div className="flex justify-between items-center">
             <p className="text-sm font-medium leading-6 text-white">Withdrawable Rewards</p>
           </div>
-          <p className="text-textGraph font-bold text-[32px] leading-6">{withdrawalRewards}</p>
+          <p className="text-textGraph font-bold text-[32px] leading-6">{withdrawalTotal}</p>
           <ResponsiveContainer width="100%" height={50}>
-            <AreaChart width={500} height={300} data={unlockedStakes}>
+            <AreaChart width={500} height={300} data={withdrawalRewards}>
               <defs>
                 <linearGradient id="colorImpression" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#777777" stopOpacity={0.15} />
@@ -155,7 +186,7 @@ const StakingOverview = () => {
                 </linearGradient>
               </defs>
               <Tooltip content={<CustomTooltip days={payload => payload[0]?.payload?.endTime} />} />
-              <Area dataKey={(data) => data.amount * data.apy / 100} stroke="#ffffff" fill="url(#colorImpression)" />
+              <Area dataKey="amount" stroke="#ffffff" fill="url(#colorImpression)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>

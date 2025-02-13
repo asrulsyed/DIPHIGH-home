@@ -147,7 +147,6 @@ const StakingLists = () => {
       try {
         setIsLoading(true)
         const userHistoryData = await getHistory(MINT_ADDRESS, publicKey)
-        console.log("aaa")
         const amount = await convertToBN(userHistoryData.stakingAmount)
         const startTime = await convertFromHextToInt(userHistoryData.stakingStart)
         const period = await convertFromHextToInt(userHistoryData.stakingPeriod)
@@ -159,8 +158,8 @@ const StakingLists = () => {
           apy: apy[index],
           status: moment().isAfter(moment(new Date(convertToLocalTime(startTime[index]))).add(period[index], 'days')) ? 'Unlocked' : 'Locked'
         }))
-        setStakingData(stakingData)
         setGlobalHistory(stakingData)
+        setStakingData(stakingData)
         setIsLoading(false)
       } catch (err) {
         console.error("eee", err);
@@ -228,7 +227,7 @@ const StakingLists = () => {
                   </td>
                 </tr>
                 :
-                stakingData.map((staking, idx) => (
+                [...stakingData].reverse().map((staking, idx) => (
                   <HistoryItemComponent
                     key={idx}
                     staking={staking}
