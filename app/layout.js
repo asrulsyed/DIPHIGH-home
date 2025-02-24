@@ -1,8 +1,5 @@
 import Header from "@/components/layout/Header";
 import "./globals.css";
-import WalletContextProvider from "@/context/WalletContextProvider";
-import { Web3Provider } from "@/context/web3context";
-import Footer1 from "@/components/layout/Footer1";
 
 export const metadata = {
   title: "Staking",
@@ -21,15 +18,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className="bg-black select-none antialised"
+        className="antialised bg-black select-none"
       >
-        <WalletContextProvider>
-          <Web3Provider>
-            <Header />
-            {children}
-            <Footer1 />
-          </Web3Provider>
-        </WalletContextProvider>
+        <Header />
+        {children}
       </body>
     </html>
   );
