@@ -7,7 +7,7 @@ import Start from "@/app/(home)/Start"
 
 const Main = () => {
   return (
-      <main className="flex flex-col items-center mt-[70px] font-display -z-10 mb-[95px]">
+      <main className="flex flex-col items-center font-display -z-10 mb-[95px]">
         <Hero />
         <Features />
         <SmarterTrading />

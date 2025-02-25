@@ -92,67 +92,16 @@ body::-webkit-scrollbar {
 
 
 /* Hero Part */
-@keyframes flow {
-  0% {
-    stroke-dashoffset: 1000;
-    opacity: 0;
-  }
+.path {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 0;
+  animation: snail 6s linear forwards;
+}
 
-  20% {
-    opacity: 1;
-  }
-
-  80% {
-    opacity: 1;
-  }
-
-  100% {
+@keyframes snail {
+  to {
     stroke-dashoffset: 0;
-    opacity: 0;
   }
-}
-
-@keyframes glow {
-  0% {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  50% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-}
-
-.animate-flow-1 {
-  stroke-dasharray: 1000;
-  animation: flow 8s ease-in-out infinite;
-}
-
-.animate-flow-2 {
-  stroke-dasharray: 1000;
-  animation: flow 8s ease-in-out infinite;
-  animation-delay: -2.5s;
-}
-
-.animate-flow-3 {
-  stroke-dasharray: 1000;
-  animation: flow 8s ease-in-out infinite;
-  animation-delay: -5s;
-}
-
-.animate-glow-1 {
-  animation: glow 4s ease-in-out infinite;
-}
-
-.animate-glow-2 {
-  animation: glow 4s ease-in-out infinite;
-  animation-delay: -2s;
 }
 
 
@@ -169,41 +118,25 @@ body::-webkit-scrollbar {
 }
 
 /* features */
-@keyframes rotate {
-  from {
-    transform: rotate(0deg) translateX(350px) rotate(0deg);
-    transform-origin: center center;
-  }
+.feature-1 {
+  transform: translate(-200px, -200px);
+}
+.feature-2 {
+  transform: translate(-300px, 0px);
+}
+.feature-3 {
+  transform: translate(-200px, 200px);
+}
+.feature-4 {
+  transform: translate(200px, 200px);
+}
+.feature-5 {
+  transform: translate(300px, 0px);
+}
+.feature-6 {
+  transform: translate(200px, -200px);
+}
 
-  to {
-    transform: rotate(360deg) translateX(350px) rotate(-360deg);
-    transform-origin: center center;
-  }
-}
-.rotate-1 {
-  animation: rotate 54s linear infinite;
-  animation-delay: -0s;
-}
-.rotate-2 {
-  animation: rotate 54s linear infinite;
-  animation-delay: -9s;
-}
-.rotate-3 {
-  animation: rotate 54s linear infinite;
-  animation-delay: -18s;
-}
-.rotate-4 {
-  animation: rotate 54s linear infinite;
-  animation-delay: -27s;
-}
-.rotate-5 {
-  animation: rotate 54s linear infinite;
-  animation-delay: -36s;
-}
-.rotate-6 {
-  animation: rotate 54s linear infinite;
-  animation-delay: -45s;
-}
 
 @keyframes flowDash {
   to {
