@@ -7,37 +7,61 @@ import Image from "next/image";
 
 gsap.registerPlugin(MotionPathPlugin);
 
-const DOTS_COUNT = 200;
-const STROKE_WIDTH = 1;
+const DOTS_COUNT = 60;
+const STROKE_WIDTH = 2;
 const COLORS = ["#000000", "#FFFFFF"]
 
 const createAnimatedGradient = (container, pathSelector) => {
   const gradientPath = document.querySelector(pathSelector);
   // Calculate the number of dots based on the path length.
-  const baseNumberOfDots = Math.ceil(0.5 * gradientPath.getTotalLength());
-  const numberOfDots = 2 * baseNumberOfDots;
+  const baseNumberOfDots = Math.ceil(gradientPath.getTotalLength() / STROKE_WIDTH);
+  const numberOfDots = baseNumberOfDots;
 
   for (let i = 0; i < DOTS_COUNT; i++) {
     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     container.appendChild(circle);
-    let radius = STROKE_WIDTH
+    let radius = 0.5 * STROKE_WIDTH
     radius = Math.max(0, radius);
 
+    if (i == DOTS_COUNT - 1) {
+      gsap.set(circle, {
+        attr: {
+          cx: 0,
+          cy: 0,
+          r: 3,
+          fill: "white",
+        },
+
+      });
+      gsap.to(circle, {
+        duration: 30,
+        ease: 'none',
+        repeat: -1,
+        immediateRender: true,
+        motionPath: {
+          path: gradientPath
+        }
+      }).progress((i - 1) / numberOfDots);
+      return;
+    }
     gsap.set(circle, {
       attr: {
         cx: 0,
         cy: 0,
         r: radius,
-        fill: gsap.utils.interpolate(COLORS, i / DOTS_COUNT),
-        filter: 'blur(5px)',
+        fill: gsap.utils.interpolate(COLORS, (i / DOTS_COUNT)),
+        // filter: 'url(#blur)'
       },
+      css: {
+        filter: 'blur(1px)'
+      }
     });
 
     gsap.to(circle, {
-      duration: 16,
+      duration: 30,
       ease: 'none',
       repeat: -1,
-      immediateRender: true,
+      immediteRender: true,
       motionPath: {
         path: gradientPath
       }
@@ -47,19 +71,23 @@ const createAnimatedGradient = (container, pathSelector) => {
 
 const Hero = () => {
   useEffect(() => {
-    const topContainer = document.querySelector(".top_animated_gradient_els");
-    const bottomContainer = document.querySelector(".bottom_animated_gradient_els");
+    const topLeftContainer = document.querySelector(".top_left_animated");
+    const bottomLeftContainer = document.querySelector(".bottom_left_animated");
+    const topRightContainer = document.querySelector(".top_right_animated");
+    const bottomRightContainer = document.querySelector(".bottom_right_animated");
 
-    if (topContainer && bottomContainer) {
-      createAnimatedGradient(topContainer, "#top_orbit");
-      createAnimatedGradient(bottomContainer, "#bottom_orbit");
+    if (topLeftContainer && bottomLeftContainer && topRightContainer && bottomRightContainer) {
+      createAnimatedGradient(topLeftContainer, "#top_left_orbit");
+      createAnimatedGradient(bottomLeftContainer, "#bottom_left_orbit");
+      createAnimatedGradient(topRightContainer, "#top_right_orbit");
+      createAnimatedGradient(bottomRightContainer, "#bottom_right_orbit");
     }
   }, []);
 
   return (
     <div className="hero-bg w-full pt-[80px] pb-[50px] flex flex-col justify-center items-center relative px-6 text-center min-h-screen">
-      <div className='w-full relative flex justify-center items-center'>
-        <svg width="1500" height="780" viewBox="0 0 1500 780" fill="none" xmlns="http://www.w3.org/2000/svg" className="">
+      <div className='relative flex items-center justify-center w-full'>
+        <svg width="1400" height="780" viewBox="-10 -10 1400 780" fill="none" xmlns="http://www.w3.org/2000/svg" className="">
           <path d="M827.639 262.792C827.639 248.919 766.369 188.142 430.344 149.497C36.2967 104.179 188.395 55.1614 287.448 50.0747C386.501 44.9879 1319.11 -17.4401 1340.22 6.60627" stroke="url(#top_left)" />
           <path d="M655.384 497.324C655.384 511.197 594.048 571.974 257.656 610.619C-136.821 655.937 15.4431 704.955 114.604 710.041C213.765 715.128 1147.4 777.556 1168.53 753.51" stroke="url(#bottom_left)" />
           <path d="M1342.11 8.71669C1088.95 23.5136 573.745 62.0781 538.209 97.9607C493.789 142.814 1297.69 215.874 1382.19 301.881" stroke="url(#top_right)" />
@@ -101,24 +129,37 @@ const Hero = () => {
               <stop offset="1" stop-color="white" stop-opacity="0.4" />
             </linearGradient>
 
+            <path d="M827.639 262.792C827.639 248.919 766.369 188.142 430.344 149.497C36.2967 104.179 188.395 55.1614 287.448 50.0747C386.501 44.9879 1319.11 -17.4401 1340.22 6.60627" id="top_left_orbit" />
+            <path d="M655.384 497.324C655.384 511.197 594.048 571.974 257.656 610.619C-136.821 655.937 15.4431 704.955 114.604 710.041C213.765 715.128 1147.4 777.556 1168.53 753.51" id="bottom_left_orbit" />
+            <path d="M1342.11 8.71669C1088.95 23.5136 573.745 62.0781 538.209 97.9607C493.789 142.814 1297.69 215.874 1382.19 301.881" id="top_right_orbit" />
+            <path d="M1169.2 752.485C916.422 737.688 401.994 699.124 366.511 663.241C322.158 618.388 1124.85 545.328 1209.23 459.321" id="bottom_right_orbit" />
+
             <filter id="blur">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="10" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
             </filter>
 
-            <path id="top_orbit" d="M827.639 262.792C827.639 248.919 766.369 188.142 430.344 149.497C36.2967 104.179 188.395 55.1614 287.448 50.0747C386.501 44.9879 1319.11 -17.4401 1340.22 6.60627 M1382.19 301.881 C1297.69 215.874 493.789 142.814 538.209 97.9607 C573.745 62.0781 1088.95 23.5136 1342.11 8.71669" />
-            <path id="bottom_orbit" d="M655.384 497.324C655.384 511.197 594.048 571.974 257.656 610.619C-136.821 655.937 15.4431 704.955 114.604 710.041C213.765 715.128 1147.4 777.556 1168.53 753.51 M1209.23 459.321 C1124.85 545.328 322.158 618.388 366.511 663.241 C401.994 699.124 916.422 737.688 1169.2 752.485" />
-            <mask id="#top_gradient_path_clip">
-              <use xlinkHref="#top_orbit" strokeWidth="40" fill="none" stroke="white" />
+            <mask id="top_left_gradient_path">
+              <use xlinkHref="#top_left_orbit" strokeWidth="40" fill="none" stroke="white" />
             </mask>
-            <mask id="bottom_gradient_path_clip">
-              <use xlinkHref="#bottom_orbit" strokeWidth="40" fill="none" stroke="white" />
+            <mask id="bottom_left_gradient_path">
+              <use xlinkHref="#bottom_left_orbit" strokeWidth="40" fill="none" stroke="white" />
+            </mask>
+            <mask id="top_right_gradient_path">
+              <use xlinkHref="#top_right_orbit" strokeWidth="40" fill="none" stroke="white" />
+            </mask>
+            <mask id="bottom_right_gradient_path">
+              <use xlinkHref="#bottom_right_orbit" strokeWidth="40" fill="none" stroke="white" />
             </mask>
 
           </defs>
 
-          <g mask="url(#top_gradient_path_clip)" className="top_animated_gradient_els">
+          <g mask="url(#top_left_gradient_path)" className="pl-10 top_left_animated">
           </g>
-          <g mask="url(#bottom_gradient_path_clip)" className="bottom_animated_gradient_els">
+          <g mask="url(#bottom_left_gradient_path)" className="bottom_left_animated">
+          </g>
+          <g mask="url(#top_right_gradient_path)" className="pl-10 top_right_animated">
+          </g>
+          <g mask="url(#bottom_right_gradient_path)" className="bottom_right_animated">
           </g>
         </svg>
 
@@ -143,7 +184,7 @@ const Hero = () => {
         alt="grid"
         width={1920}
         height={1080}
-        className="w-full h-auto object-cover absolute right-0 bottom-0 left-0"
+        className="absolute bottom-0 left-0 right-0 object-cover w-full h-auto"
       />
       <Image
         src="/hero-light.png"
