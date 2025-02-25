@@ -104,6 +104,37 @@ body::-webkit-scrollbar {
   }
 }
 
+.hero-light {
+  transform-origin: top left;
+  animation: heroLight 10s ease-in-out infinite alternate;
+}
+
+@keyframes heroLight {
+  0%, 100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.hero-light1 {
+  transform-origin: top right;
+  animation: heroLight1 10s ease-in-out infinite alternate;
+}
+
+@keyframes heroLight1 {
+  0%, 100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 
 /* Simple Steps */
 .step-bg {
