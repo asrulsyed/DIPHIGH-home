@@ -8,7 +8,7 @@ import Image from "next/image";
 gsap.registerPlugin(MotionPathPlugin);
 
 const DOTS_COUNT = 200;
-const STROKE_WIDTH = 10;
+const STROKE_WIDTH = 1;
 const COLORS = ["#000000", "#FFFFFF"]
 
 const createAnimatedGradient = (container, pathSelector) => {
@@ -20,7 +20,7 @@ const createAnimatedGradient = (container, pathSelector) => {
   for (let i = 0; i < DOTS_COUNT; i++) {
     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     container.appendChild(circle);
-    let radius = 0.5 * STROKE_WIDTH + (0.02 * i - 0.6 * STROKE_WIDTH);
+    let radius = STROKE_WIDTH
     radius = Math.max(0, radius);
 
     gsap.set(circle, {
@@ -29,7 +29,8 @@ const createAnimatedGradient = (container, pathSelector) => {
         cy: 0,
         r: radius,
         fill: gsap.utils.interpolate(COLORS, i / DOTS_COUNT),
-      }
+        filter: 'blur(5px)',
+      },
     });
 
     gsap.to(circle, {
@@ -99,13 +100,18 @@ const Hero = () => {
               <stop stop-color="white" stop-opacity="0" />
               <stop offset="1" stop-color="white" stop-opacity="0.4" />
             </linearGradient>
+
+            <filter id="blur">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="10" />
+            </filter>
+
             <path id="top_orbit" d="M827.639 262.792C827.639 248.919 766.369 188.142 430.344 149.497C36.2967 104.179 188.395 55.1614 287.448 50.0747C386.501 44.9879 1319.11 -17.4401 1340.22 6.60627 M1382.19 301.881 C1297.69 215.874 493.789 142.814 538.209 97.9607 C573.745 62.0781 1088.95 23.5136 1342.11 8.71669" />
             <path id="bottom_orbit" d="M655.384 497.324C655.384 511.197 594.048 571.974 257.656 610.619C-136.821 655.937 15.4431 704.955 114.604 710.041C213.765 715.128 1147.4 777.556 1168.53 753.51 M1209.23 459.321 C1124.85 545.328 322.158 618.388 366.511 663.241 C401.994 699.124 916.422 737.688 1169.2 752.485" />
             <mask id="#top_gradient_path_clip">
-              <use xlinkHref="#top_orbit" strokeWidth="20" fill="none" stroke="white" />
+              <use xlinkHref="#top_orbit" strokeWidth="40" fill="none" stroke="white" />
             </mask>
             <mask id="bottom_gradient_path_clip">
-              <use xlinkHref="#bottom_orbit" strokeWidth="20" fill="none" stroke="white" />
+              <use xlinkHref="#bottom_orbit" strokeWidth="40" fill="none" stroke="white" />
             </mask>
 
           </defs>
