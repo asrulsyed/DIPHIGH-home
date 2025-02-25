@@ -47,9 +47,9 @@ const Hero = () => {
   }, []);
 
   return (
-    <div className="hero-bg max-w-[1154px] w-full pt-[50px] pb-[50px] flex flex-col justify-center items-center relative px-6 text-center min-h-screen">
+    <div className="hero-bg max-w-[1154px] w-full pt-[80px] pb-[50px] flex flex-col justify-center items-center relative px-6 text-center min-h-screen">
       <div className='relative'>
-        <svg width="959" height="609" viewBox="0 0 959 609" fill="none" xmlns="http://www.w3.org/2000/svg" className="flex items-center py-3 scale-y-110">
+        <svg width="959" height="609" viewBox="0 0 959 609" fill="none" xmlns="http://www.w3.org/2000/svg" className="flex items-center py-3 scale-y-125">
           <defs>
             <linearGradient id="mergedGradient" x1="100%" y1="0" x2="0" y2="100%" gradientUnits="userSpaceOnUse">
               <stop stopColor="#D6D6D6" stopOpacity="0.2" />
